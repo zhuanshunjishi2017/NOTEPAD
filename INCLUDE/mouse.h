@@ -17,6 +17,7 @@ extern int MouseX;      // 鼠标当前X坐标
 extern int MouseY;      // 鼠标当前Y坐标
 extern int MouseS;      // 鼠标状态（按钮状态等�?
 extern int press;       // 鼠标按键状态（是否按下�?
+extern int MouseForm;   //记录鼠标形态
 extern union REGS regs; // DOS中断寄存器结�?
 
 #endif

@@ -10,14 +10,15 @@
 #include<dos.h>
 #include<math.h>
 #include<time.h>
+#include <dir.h>
+
 
 #include"hz.h"
 #include"ghz.h"
 #include"mouse.h"
-#include"SVGA.h"
-#include "BMP.h"
 #include "menu.h"
 #include "gui.h"
+
 
 #define NUM0 0x5230
 #define NUM1 0x4f31
@@ -57,10 +58,20 @@
 #define NINE 0x0a39
 #define ZERO 0x0b30
 
+#define DIALOG_EMPTY 0
+#define DIALOG_EXIT 1
+#define DIALOG_OPEN 2
+#define DIALOG_SAVE 3
+#define DIALOG_FIND 4
+#define DIALOG_HELP 5
+#define DIALOG_ABOUT 6
+
 void update_frame(void);
 
 void update_menu(MENU*,MENU (*)[SUBMENU_LEN],int*,int*,int*);
 
 int update_exit_dialog(WINDOW *,BUTTON *,int *,int *,int *);
+int update_open_dialog(WINDOW *,BUTTON *,ENTRY *,int *,int *,char (*)[32]);
+void tackle_drag_window(WINDOW *win,DRAGPOS *pos,int *flag);
 
 #endif

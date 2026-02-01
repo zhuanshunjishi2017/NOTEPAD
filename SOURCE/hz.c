@@ -1,17 +1,17 @@
 #include "hz.h"
 
-/*16λ�����������x,y��ʾ�������λ�ã�sΪ���ִ���color��ʾ������ɫ��
-name Ϊ���ֿ��ļ�·������������Ϣ*/
+/*16��???????????x,y??????????��???s????????color????????????
+name ?????????��?????????????*/
 void prt_hz16(int x, int y, char *s, unsigned int color, char * name) 
 {
 	FILE * fp=NULL;
-	char buffer[32]={0};                                          //������ȡ16���ֵ�32λ��ģ
+	char buffer[32]={0};                                          //???????16?????32��???
 	int i=0;
 	int j=0;
 	unsigned char qh =0;     
-    unsigned char wh =0; 	     //������λ��
-	unsigned long offset=0;     //��������
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ�ÿһλ����Ϣ
+    unsigned char wh =0; 	     //??????��??
+	unsigned long offset=0;     //????????
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��???��?????
 						  0x02,0x01};
 	if((fp=fopen(name,"rb"))==NULL)
 	{
@@ -19,14 +19,14 @@ void prt_hz16(int x, int y, char *s, unsigned int color, char * name)
 		getch();
 		exit(0);
 	}
-	while(*s)                                         //�����ִ�δ���꣬�����
+	while(*s)                                         //???????��?????????
     {
-		qh=* s-160;                                       //�õ���������
+		qh=* s-160;                                       //???????????
         wh=*(s+1) -160;
-        offset=(94*(qh-1)+(wh-1))*32L;                     //����λ����
-        fseek(fp,offset, SEEK_SET);                        //���ֿ��ļ��в�������λ��
-        fread(buffer, 32, 1, fp);                          //��ȡ��Ӧλ�õ���ģ
-        for(i=0;i<16;i++)                                  //��ָ�������һ������
+        offset=(94*(qh-1)+(wh-1))*32L;                     //????��????
+        fseek(fp,offset, SEEK_SET);                        //?????????��???????��??
+        fread(buffer, 32, 1, fp);                          //??????��??????
+        for(i=0;i<16;i++)                                  //?????????????????
 			{
 				for(j=0;j<16;j++)
 				{
@@ -36,25 +36,25 @@ void prt_hz16(int x, int y, char *s, unsigned int color, char * name)
 					}
 				}
 			}
-			x+=16;                                          //������������Ϊ16
-			s+=2;                                           //��ȡ��һ������
+			x+=16;                                          //?????????????16
+			s+=2;                                           //????????????
     }
     fclose(fp);
 }
 
 
-/*(���ӳ�)24λ�����������x,y��ʾ�������λ�ã�sΪ���ִ���color��ʾ������ɫ��
-name Ϊ���ֿ��ļ�·������������Ϣ*/
+/*(?????)24��???????????x,y??????????��???s????????color????????????
+name ?????????��?????????????*/
 void prt_hz24(int x, int y,char * s, unsigned int color, char * name)    
 {
 	FILE * fp=NULL;
-	char buffer[72]={0};                                            //������ȡ24���ֵ�72λ��ģ
+	char buffer[72]={0};                                            //???????24?????72��???
 	int i=0;
 	int j=0;
 	unsigned char qh=0;
 	unsigned char wh=0;
 	unsigned long offset=0;
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ�ÿһλ����Ϣ
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��???��?????
 						  0x02,0x01};
 	if((fp=fopen(name,"rb"))==NULL)
 	{
@@ -69,7 +69,7 @@ void prt_hz24(int x, int y,char * s, unsigned int color, char * name)
         offset=(94*(qh-1)+(wh-1))*72L;             
         fseek(fp,offset, SEEK_SET);
 		fread(buffer, 72, 1, fp);
-        for(i=0; i<24; i++)                                 //���һ������
+        for(i=0; i<24; i++)                                 //??????????
            for(j=0;j<24;j++)
 			{
 				if((mask[j%8] & buffer[i*3+j/8])!=0)
@@ -78,8 +78,8 @@ void prt_hz24(int x, int y,char * s, unsigned int color, char * name)
 				}					
 			}
         s+=2;
-        x+=24;                                         //����������24
-		delay(50);                                   //ʹÿ������������̿ɼ���������Ч��������
+        x+=24;                                         //??????????24
+		delay(50);                                   //?????????????????????????��????????
     }
     fclose(fp);
 }
@@ -87,18 +87,18 @@ void prt_hz24(int x, int y,char * s, unsigned int color, char * name)
 
 
 
-/*x,y��ʾ�������λ�ã�sΪ���ִ���color��ʾ������ɫ��
-name Ϊ���ֿ��ļ�·������������Ϣ*/
+/*x,y??????????��???s????????color????????????
+name ?????????��?????????????*/
 void prt_hz24d(int x, int y,char * s, unsigned int color, char * name)    
 {
 	FILE * fp=NULL;
-	char buffer[72]={0};                                             //������ȡ24���ֵ�72λ��ģ
+	char buffer[72]={0};                                             //???????24?????72��???
 	int i=0;
 	int j=0;
 	unsigned char qh=0;
 	unsigned char wh=0;
 	unsigned long offset=0;
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ�ÿһλ����Ϣ
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��???��?????
 						  0x02,0x01};
 	if((fp=fopen(name,"rb"))==NULL)
 	{
@@ -113,7 +113,7 @@ void prt_hz24d(int x, int y,char * s, unsigned int color, char * name)
         offset=(94*(qh-1)+(wh-1))*72L;             
         fseek(fp,offset, SEEK_SET);
 		fread(buffer, 72, 1, fp);
-        for(i=0; i<24; i++)                                 //���һ������
+        for(i=0; i<24; i++)                                 //??????????
            for(j=0;j<24;j++)
 			{
 				if((mask[j%8] & buffer[i*3+j/8])!=0)
@@ -122,12 +122,12 @@ void prt_hz24d(int x, int y,char * s, unsigned int color, char * name)
 				}					
 			}
            s+=2;
-           x+=24;                                         //����������24
+           x+=24;                                         //??????????24
     }
     fclose(fp);
 }
 
-void prt_asc16( int x,int y,char * s,unsigned int color)		//���һ��Ӣ�ĺ���
+void prt_asc16( int x,int y,char * s,unsigned int color)		//????????????
 {
 
 	FILE *  fp=NULL;
@@ -142,15 +142,15 @@ void prt_asc16( int x,int y,char * s,unsigned int color)		//���һ��Ӣ�
 	}
 	while(*s)
         { 
-	offset=*s * 16L;                         	//����λ����
+	offset=*s * 16L;                         	//????��????
 	fseek(fp,offset,0);
-	fread(buffer,16,1,fp);                        	//������ģ��Ϣ
+	fread(buffer,16,1,fp);                        	//??????????
 	
 	for(i=0;i<16;i++)
 	{
 		for(j=0;j<8;j++)
 		{
-			if((buffer[i]>>(7-j))&0x1)    	//Ϊ1��λ��ʾ
+			if((buffer[i]>>(7-j))&0x1)    	//?1??��???
 			{
 				putpixel(x+j,y+i,color);
 			}
@@ -162,7 +162,7 @@ void prt_asc16( int x,int y,char * s,unsigned int color)		//���һ��Ӣ�
 	fclose(fp);
 }
 
-void prt_asc16_ch( int x,int y,char s,unsigned int color)		//���һ��Ӣ�ĺ���
+void prt_asc16_ch( int x,int y,char s,unsigned int color)		//????????????
 {
 
 	FILE *  fp=NULL;
@@ -170,7 +170,7 @@ void prt_asc16_ch( int x,int y,char s,unsigned int color)		//���һ��Ӣ
 	int j=0;
 	unsigned long offset=0;
 	char buffer[16]={0};
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ�ÿһλ����Ϣ
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��???��?????
 						  0x02,0x01};
 	if ((fp=fopen("hzk\\ASC16","rb"))==NULL)
 	{
@@ -178,9 +178,9 @@ void prt_asc16_ch( int x,int y,char s,unsigned int color)		//���һ��Ӣ
 				  getch();		
                      exit(1);
 	}
-	offset=s * 16L;                         	//����λ����
+	offset=s * 16L;                         	//????��????
 	fseek(fp,offset,0);
-	fread(buffer,16,1,fp);                        	//������ģ��Ϣ	
+	fread(buffer,16,1,fp);                        	//??????????	
 	for(i=0;i<16;i++)
 	{
 		for(j=0;j<8;j++)
@@ -204,9 +204,9 @@ void Read_Asc16(char key,unsigned char *buffer)
 				  getch();		
                      exit(1);
 	}
-	offset=key* 16L;                         	//����λ����
+	offset=key* 16L;                         	//????��????
 	fseek(fp,offset,0);
-	fread(buffer,16,1,fp);                    //������ģ��Ϣ	
+	fread(buffer,16,1,fp);                    //??????????	
 	fclose(fp);
 }
 
@@ -215,7 +215,7 @@ void Put_Asc16(int x,int y,char key,unsigned int color)
     int i=0;
 	int j=0;
     unsigned char buffer[16];
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ�ÿһλ����Ϣ
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��???��?????
 						  0x02,0x01};
     Read_Asc16(key,buffer);
     for(i=0;i<16;i++)
@@ -224,7 +224,7 @@ void Put_Asc16(int x,int y,char key,unsigned int color)
                 putpixel(x+i,y+j,color);
 }
 
-/*��ʾ�Ŵ���Ӣ���ַ�*/
+/*??????????????*/
 void Put_Asc16_Size(int x,int y,int xsize,int ysize,char key,unsigned int color)
 {
 	int i=0;
@@ -232,7 +232,7 @@ void Put_Asc16_Size(int x,int y,int xsize,int ysize,char key,unsigned int color)
 	int m=0;
 	int n=0;
 	unsigned char buffer[16]={0};
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ�ÿһλ����Ϣ
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��???��?????
 						  0x02,0x01};
 	Read_Asc16(key,buffer);
 	for(i=0;i<16;i++)
@@ -243,7 +243,7 @@ void Put_Asc16_Size(int x,int y,int xsize,int ysize,char key,unsigned int color)
 				        putpixel(x+j*xsize+n,y+m+i*ysize,color);
 }
 
-/*��ʾ�Ŵ���Ӣ�ĺ������ַ���*/
+/*?????????????????????*/
 void put_asc16_size(int x,int y,int xsize,int ysize,char *s,unsigned int color )
 {
     int i=0;
@@ -253,7 +253,7 @@ void put_asc16_size(int x,int y,int xsize,int ysize,char *s,unsigned int color )
     }
 }
 
-/*��ʾ�Ŵ�������*/
+/*????????????*/
 void put_asc16_number_size(int x,int y,int xsize,int ysize,int n,unsigned int color )
 {
 	char *s=0;
@@ -265,7 +265,7 @@ void put_asc16_number_size(int x,int y,int xsize,int ysize,int n,unsigned int co
     }
 }
 
-/*��ʾ�Ŵ�������,lΪ���ǳ���*/
+/*????????????,l????????*/
 void put_asc16_number_size_coverd(int x,int y,int xsize,int ysize,int l,int n,unsigned int color )
 {
 	char *s=0;
@@ -273,7 +273,8 @@ void put_asc16_number_size_coverd(int x,int y,int xsize,int ysize,int l,int n,un
 	itoa(n,s,10);
 	for(i=0;i<l;i++)
 	{
-		Line_Thick(x+i,y,x+i,y+16*ysize,1,Getpixel64k(x+i,y-1));
+		setcolor(getpixel(x+i,y-1));
+		line(x+i,y,x+i,y+16*ysize);
 	}
     for(i=0;s[i]!=0;i++)
     {
@@ -281,19 +282,19 @@ void put_asc16_number_size_coverd(int x,int y,int xsize,int ysize,int l,int n,un
     }
 }
 
-/*x,y��ʾ�������λ�ã�xsize,ysizeΪ�Ŵ�����sΪ���ִ���color��ʾ������ɫ��name Ϊ���ֿ��ļ�·������������Ϣ*/
+/*x,y??????????��???xsize,ysize????????s????????color????????????name ?????????��?????????????*/
 void prt_hz16_size(int x, int y, int xsize,int ysize,char *s, unsigned int color, char * name)  
 {
 	FILE * fp;
-	char buffer[32];                                          //������ȡ16���ֵ�32λ��ģ
+	char buffer[32];                                          //???????16?????32��???
 	int i=0;
 	int j=0;
 	int m=0;
 	int n=0;
-	unsigned char qh=0;          	//�������㺺��λ�ź�����
+	unsigned char qh=0;          	//??????????��???????
 	unsigned char wh=0;    
-	unsigned long offset=0;                                     //��¼λ����
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ�ÿһλ����Ϣ
+	unsigned long offset=0;                                     //???��????
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��???��?????
 						  0x02,0x01};
 	if((fp=fopen(name,"rb"))==NULL)
 	{
@@ -301,14 +302,14 @@ void prt_hz16_size(int x, int y, int xsize,int ysize,char *s, unsigned int color
 		getch();
 		exit(0);
 	}
-	while(*s!=0)                                         //�����ִ�δ���꣬�����
+	while(*s!=0)                                         //???????��?????????
     {
-		qh=* s-160;                                       //�������ź�λ��
+		qh=* s-160;                                       //?????????��??
         wh=*(s+1) -160;
-        offset=(94L*(qh-1)+(wh-1))*32;                     //���㺺�ֵĵ�ַ��
-        fseek(fp,offset, 0);                        //���ֿ��ļ��в�������λ��
-        fread(buffer, 32, 1, fp);                          //��ȡ��Ӧλ�õ���ģ
-        for(i=0;i<16;i++)                                  //��ָ�������һ������
+        offset=(94L*(qh-1)+(wh-1))*32;                     //???????????
+        fseek(fp,offset, 0);                        //?????????��???????��??
+        fread(buffer, 32, 1, fp);                          //??????��??????
+        for(i=0;i<16;i++)                                  //?????????????????
 		{
 			for(j=0;j<16;j++)
 			{
@@ -324,28 +325,28 @@ void prt_hz16_size(int x, int y, int xsize,int ysize,char *s, unsigned int color
 				}
 			}
 		}
-	    x+=16*xsize;                                          //������������Ϊ16*xsize
-		s+=2;                                           //��ȡ��һ������
+	    x+=16*xsize;                                          //?????????????16*xsize
+		s+=2;                                           //????????????
     }
     fclose(fp);
 }
 
-/*�������16*16��������16*16asc�ַ����ַ���������x,y��ʾ�������λ�ã�xsize,ysizeΪ�Ŵ�����sΪ����ַ�����
-color��ʾ�ַ���ɫ��name Ϊ���ֿ��ļ�·������������Ϣ*/
+/*???????16*16????????16*16asc????????????????x,y??????????��???xsize,ysize????????s???????????
+color???????????name ?????????��?????????????*/
 void prt_hz16_asc16_size(int x, int y, int xsize,int ysize,char *s, unsigned int color, char * name)
 {
 	FILE * fp1=NULL;
 	FILE * fp2=NULL;
-	char buffer1[16]={0};                                          //������ȡ16ascll�ַ���16λ��ģ
-	char buffer2[32]={0};                                          //������ȡ16���ֵ�32λ��ģ
+	char buffer1[16]={0};                                          //???????16ascll?????16��???
+	char buffer2[32]={0};                                          //???????16?????32��???
 	int i=0;
 	int j=0;
 	int m=0;
-	int n=0;                                                             //ѭ������
+	int n=0;                                                             //???????
 	unsigned char qh=0;
-    unsigned char wh=0;                                    //�������㺺����λ��
-	unsigned long offset=0;                               //��¼λ����
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ���ģÿһλ����Ϣ
+    unsigned char wh=0;                                    //????????????��??
+	unsigned long offset=0;                               //???��????
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��??????��?????
 						  0x02,0x01};
 	if ((fp1=fopen("hzk\\ASC16","rb"))==NULL)
 	{
@@ -362,14 +363,14 @@ void prt_hz16_asc16_size(int x, int y, int xsize,int ysize,char *s, unsigned int
 		exit(0);
 	}
  
-	while(*s!=0)                                         //������ַ���δ���꣬�����
+	while(*s!=0)                                         //??????????��?????????
     {
-        if((*s&0x80)==0)                               //�����ַ��ֽ����λΪ0���������ֽ�ASCII�룬����ַ�
+        if((*s&0x80)==0)                               //?????????????��?0???????????ASCII????????
 		{
-			offset=*s * 16L;                         	//����λ����
+			offset=*s * 16L;                         	//????��????
 	        fseek(fp1,offset,0);
-	        fread(buffer1,16,1,fp1);                //������ģ��Ϣ
-		    for(i=0;i<16;i++)                         //��ָ�������һ���Ŵ����ַ�
+	        fread(buffer1,16,1,fp1);                //??????????
+		    for(i=0;i<16;i++)                         //?????????????????????
 			{
 				for(j=0;j<8;j++)
 				{
@@ -379,23 +380,23 @@ void prt_hz16_asc16_size(int x, int y, int xsize,int ysize,char *s, unsigned int
 						{
 							for(n=0;n<ysize;n++)
 						    {
-	                            putpixel(x+j*xsize+m,y+2*ysize+i*ysize+n,color); //y+2*ysize��Ϊ��ƽ�⺺����Ӣ���ַ��ĸ߶�
+	                            putpixel(x+j*xsize+m,y+2*ysize+i*ysize+n,color); //y+2*ysize??????????????????????
 							}
 						}
 					}
 				}
 			}
-			x+=8*xsize;           //������������Ϊ8*xsize
-			s++;		                //��ȡ��һ���ַ�
+			x+=8*xsize;           //?????????????8*xsize
+			s++;		                //???????????
 		}		
-		else if((*s&0x80)!=0)                                     //�����ַ��ֽ����λΪ1���������ֽ�Ϊ��������һ���֣��������  
+		else if((*s&0x80)!=0)                                     //?????????????��?1?????????????????????????????????  
 		{
-			qh=* s-160;                                       //�������ź�λ��
+			qh=* s-160;                                       //?????????��??
     	    wh=*(s+1) -160;
-     	    offset=(94L*(qh-1)+(wh-1))*32;  //���㺺�ֵĵ�ַ��
-   	   	    fseek(fp2,offset, 0);                        //���ֿ��ļ��в�������λ��
-  	        fread(buffer2, 32, 1, fp2);                  //��ȡ��Ӧλ�õ���ģ
-  	        for(i=0;i<16;i++)                               //��ָ�������һ���Ŵ��ĺ���
+     	    offset=(94L*(qh-1)+(wh-1))*32;  //???????????
+   	   	    fseek(fp2,offset, 0);                        //?????????��???????��??
+  	        fread(buffer2, 32, 1, fp2);                  //??????��??????
+  	        for(i=0;i<16;i++)                               //?????????????????????
 			{
 				for(j=0;j<16;j++)
 				{
@@ -411,30 +412,30 @@ void prt_hz16_asc16_size(int x, int y, int xsize,int ysize,char *s, unsigned int
 					}					
 				}
 			}
-			x+=16*xsize;              //������������Ϊ16*xsize
-			s+=2;   			             //��ȡ��һ���ַ�
+			x+=16*xsize;              //?????????????16*xsize
+			s+=2;   			             //???????????
         }
 	}
     fclose(fp1);
 	fclose(fp2);
 }	
 
-/*�������24*24��������32*32 asc�ַ����ַ���������x,y��ʾ�������λ�ã�sΪ����ַ�����
-color��ʾ�ַ���ɫ��name Ϊ���ֿ��ļ�·������������Ϣ*/
+/*???????24*24????????32*32 asc????????????????x,y??????????��???s???????????
+color???????????name ?????????��?????????????*/
 void prt_hz24_asc32(int x, int y,char *s, unsigned int color, char * name)
 {
 	FILE * fp1=NULL;
 	FILE * fp2=NULL;
-	char buffer1[16]={0};                                          //������ȡ12ascll�ַ���12λ��ģ
-	char buffer2[72]={0};                                          //������ȡ24���ֵ�72λ��ģ
+	char buffer1[16]={0};                                          //???????12ascll?????12��???
+	char buffer2[72]={0};                                          //???????24?????72��???
 	int i=0;
 	int j=0;
 	int m=0;
-	int n=0;                                                             //ѭ������
+	int n=0;                                                             //???????
 	unsigned char qh=0;
-    unsigned char wh=0;                                    //�������㺺����λ��
-	unsigned long offset=0;                               //��¼λ����
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //�������γ���ģÿһλ����Ϣ
+    unsigned char wh=0;                                    //????????????��??
+	unsigned long offset=0;                               //???��????
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //???????��??????��?????
 						  0x02,0x01};
 	if ((fp1=fopen("hzk\\ASC16","rb"))==NULL)
 	{
@@ -450,14 +451,14 @@ void prt_hz24_asc32(int x, int y,char *s, unsigned int color, char * name)
 		getch();
 		exit(0);
 	}
-	while(*s!=0)                                         //������ַ���δ���꣬�����
+	while(*s!=0)                                         //??????????��?????????
     {
-        if((*s&0x80)==0)                               //�����ַ��ֽ����λΪ0���������ֽ�ASCII�룬����ַ�
+        if((*s&0x80)==0)                               //?????????????��?0???????????ASCII????????
 		{
-			offset=*s * 16L;                         	//����λ����
+			offset=*s * 16L;                         	//????��????
 	        fseek(fp1,offset,0);
-	        fread(buffer1,16,1,fp1);                //������ģ��Ϣ
-		    for(i=0;i<16;i++)                              //��ָ�������һ��32*32�ַ�
+	        fread(buffer1,16,1,fp1);                //??????????
+		    for(i=0;i<16;i++)                              //?????????????32*32???
 			{
 				for(j=0;j<8;j++)
 				{
@@ -467,23 +468,23 @@ void prt_hz24_asc32(int x, int y,char *s, unsigned int color, char * name)
 						{
 							for(n=0;n<2;n++)
 						    {
-	                            putpixel(x+j*2+m,y-2+i*2+n,color); //y-2��Ϊ��ƽ�⺺����Ӣ���ַ��ĸ߶�
+	                            putpixel(x+j*2+m,y-2+i*2+n,color); //y-2??????????????????????
 							}
 						}
 					}
 				}
 			}
-			x+=8*2;           //������������Ϊ16
-			s++;		                //��ȡ��һ���ַ�
+			x+=8*2;           //?????????????16
+			s++;		                //???????????
 		}		
-		else if((*s&0x80)!=0)                                     //�����ַ��ֽ����λΪ1���������ֽ�Ϊ��������һ���֣��������  
+		else if((*s&0x80)!=0)                                     //?????????????��?1?????????????????????????????????  
 		{
-			qh=* s-160;                                       //�������ź�λ��
+			qh=* s-160;                                       //?????????��??
     	    wh=*(s+1) -160;
-     	    offset=(94L*(qh-1)+(wh-1))*72;  //���㺺�ֵĵ�ַ��
-   	   	    fseek(fp2,offset, 0);                        //���ֿ��ļ��в�������λ��
-  	        fread(buffer2, 72, 1, fp2);                  //��ȡ��Ӧλ�õ���ģ
-  	        for(i=0;i<24;i++)                               //��ָ�������һ���Ŵ��ĺ���
+     	    offset=(94L*(qh-1)+(wh-1))*72;  //???????????
+   	   	    fseek(fp2,offset, 0);                        //?????????��???????��??
+  	        fread(buffer2, 72, 1, fp2);                  //??????��??????
+  	        for(i=0;i<24;i++)                               //?????????????????????
 			{
 				for(j=0;j<24;j++)
 				{
@@ -493,21 +494,21 @@ void prt_hz24_asc32(int x, int y,char *s, unsigned int color, char * name)
 					}					
 				}
 			}
-			x+=24;              //������������Ϊ24
-			s+=2;   			             //��ȡ��һ���ַ�
+			x+=24;              //?????????????24
+			s+=2;   			             //???????????
         }
 	}
     fclose(fp1);
 	fclose(fp2);
 }	
 	
-/*��������12*24����ҷ��ţ�����*/
+/*????????12*24?????????????*/
 void RMB(int x,int y,int xsize,int ysize,unsigned color)
 {
 	int i=0;
 	int j=0;
 	int m=0;
-	int n=0;  //ѭ������
+	int n=0;  //???????
 	int RMB[24][12]={
 	    {0,0,0,0,0,0,0,0,0,0,0,0},
 		{1,1,1,1,1,0,0,0,1,1,1,1},
@@ -530,7 +531,7 @@ void RMB(int x,int y,int xsize,int ysize,unsigned color)
 		{0,0,0,0,0,1,1,0,0,0,0,0},
 		{0,0,0,0,0,1,1,0,0,0,0,0},
 		{0,0,0,0,0,1,1,0,0,0,0,0},
-	    {0,0,0,1,1,1,1,1,1,0,0,0}}; //���������ͼ�������
+	    {0,0,0,1,1,1,1,1,1,0,0,0}}; //?????????????????
 		
 	for(i=0;i<24;i++)
 	{

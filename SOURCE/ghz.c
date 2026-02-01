@@ -277,7 +277,8 @@ void puthz_coverd(int x, int y,char *s,int n,int flag,int part,int color)
 	int i=0;
 	for(i=0;i<part*n;i++)
 	{
-		Line_Thick(x+i,y,x+i,y+flag+1,1,Getpixel64k(x+i,y-1));
+		setcolor(getpixel(x+i,y-1));
+		line(x+i,y,x+i,y+flag+1);
 	}
 	puthz( x,  y, s, flag, part, color);
 
@@ -287,7 +288,8 @@ void puthz_coverd2(int x, int y,char *s,int n,int flag,int part,int color,int ba
 	int i=0;
 	for(i=0;i<part*n;i++)
 	{
-		Line_Thick(x+i,y,x+i,y+flag+1,1,backcolor);
+		setcolor(backcolor);
+		line(x+i,y,x+i,y+flag+1);
 	}
 	puthz( x,  y, s, flag, part, color);
 

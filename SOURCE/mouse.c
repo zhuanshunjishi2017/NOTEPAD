@@ -10,6 +10,8 @@
 int MouseX;      // 鼠标当前X坐标
 int MouseY;      // 鼠标当前Y坐标
 int MouseS;      // 鼠标状态（按钮状态等）
+int MouseForm;   //记录鼠标形态
+
 int press;       // 鼠标按键状态（是否按下）
 void *buffer;    // 用于保存鼠标背景的缓冲区
 union REGS regs; // DOS中断寄存器结构
@@ -28,6 +30,8 @@ void mouseinit()
     xmax = x_max - 1;
     ymin = 8;
     ymax = y_max - 2;
+
+    MouseForm = 0;
 
     // 调用 DOS中断 初始化鼠标
     regs.x.ax = 0;           // 初始化鼠标
@@ -67,7 +71,7 @@ void mouseinit()
 // 绘制鼠标光标
 void mouse(int x, int y)
 {
-    switch (MouseS)
+    switch (MouseForm)
     {
     case 1: // 鼠标左键按下
     {
@@ -138,23 +142,28 @@ void mouse(int x, int y)
     }
     break;
 
-    default: // 鼠标未按下
+    case 0: // 鼠标未按下
     {
         // 设置线条样式和颜色
         setlinestyle(0, 0, 1); // 设置为实线
         setcolor(WHITE);       // 设置颜色为白色
 
-        // 绘制鼠标光标的主体部分（白色线条）
+        // 绘制鼠标光标的主体部分（填充颜色）
         line(x, y, x, y + 13);              // 垂直线
         line(x + 1, y + 1, x + 1, y + 12);  // 垂直线
         line(x + 2, y + 2, x + 2, y + 11);  // 垂直线
-        line(x + 3, y + 3, x + 3, y + 10);  // 垂直线
-        line(x + 4, y + 4, x + 4, y + 12);  // 垂直线
+        line(x + 3, y + 3, x + 3, y + 11);  // 垂直线
+        line(x + 4, y + 4, x + 4, y + 13);  // 垂直线
+
         line(x + 5, y + 5, x + 5, y + 9);   // 垂直线
-        line(x + 5, y + 11, x + 5, y + 14); // 垂直线
+        line(x + 5, y + 11, x + 5, y + 16); // 垂直线
+
         line(x + 6, y + 6, x + 6, y + 9);   // 垂直线
-        line(x + 6, y + 13, x + 6, y + 15); // 垂直线
+        line(x + 6, y + 13, x + 6, y + 17); // 垂直线
+        
         line(x + 7, y + 7, x + 7, y + 9);   // 垂直线
+        line(x + 7, y + 15, x + 7, y + 15);   // 垂直线
+        
         line(x + 8, y + 8, x + 8, y + 9);   // 垂直线
         line(x + 9, y + 9, x + 9, y + 9);   // 垂直线
 
@@ -163,16 +172,16 @@ void mouse(int x, int y)
 
         // 绘制鼠标光标的阴影部分（深灰色线条）
         line(x - 1, y - 1, x - 1, y + 14);   // 左侧阴影
-        line(x - 1, y + 14, x + 3, y + 11);  // 底部阴影
-        line(x + 3, y + 11, x + 3, y + 12);  // 右侧阴影
-        line(x + 3, y + 12, x + 4, y + 13);  // 右侧阴影
-        line(x + 4, y + 13, x + 4, y + 14);  // 右侧阴影
-        line(x + 4, y + 14, x + 7, y + 17);  // 右侧阴影
-        line(x + 7, y + 17, x + 7, y + 13);  // 右侧阴影
-        line(x + 7, y + 13, x + 6, y + 12);  // 右侧阴影
-        line(x + 6, y + 12, x + 6, y + 11);  // 右侧阴影
-        line(x + 6, y + 11, x + 5, y + 10);  // 右侧阴影
+        line(x - 1, y + 14, x + 2, y + 11);  // 底部阴影
+
+        line(x + 2, y + 11, x + 5, y + 17);  // 右侧阴影
+
+        line(x + 5, y + 17, x + 8, y + 16);
+
+        line(x + 8, y + 16, x + 5, y + 10);  // 右侧阴影
+
         line(x + 5, y + 10, x + 11, y + 10); // 右侧阴影
+        
         line(x + 11, y + 10, x - 1, y - 2);  // 右侧阴影
     }
     break;

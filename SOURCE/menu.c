@@ -9,12 +9,12 @@ MENU menulist[MENU_LEN] = {{"文件","(F)"},
                     {"帮助","(H)"}};
 
 MENU submenu[MENU_LEN][SUBMENU_LEN] = {{{"新建","(N)"},
-                    {"打开","(O)"},
+                    {"打开","(O)",&start_open_dialog},
                     {"保存","(S)"},
                     {"另存为","(A)"},
                     {"<divideline>","\0"},
                     {"关闭文件","(C)"},
-                    {"退出程序","Esc",&dialog_state},
+                    {"退出程序","Esc",&start_exit_dialog},
                     {"<endline>","\0"}},
                 {{"全部选择","(A)"},
                     {"<divideline>","\0"},
@@ -33,10 +33,16 @@ MENU submenu[MENU_LEN][SUBMENU_LEN] = {{{"新建","(N)"},
                     {"<endline>","\0"}}};
 
 
-void dialog_state(void)
+void start_exit_dialog(void)
 {
-    extern int is_exit_dialog;
-    is_exit_dialog = 1;
+    extern int dialog_state;
+    dialog_state = DIALOG_EXIT;
+}
+
+void start_open_dialog(void)
+{
+    extern int dialog_state;
+    dialog_state = DIALOG_OPEN;
 }
 
 void create_menu(MENU *m,int x,int fg,int bg)
@@ -112,7 +118,7 @@ int submenu_mouse(MENU *subm,int x,int *flag)//x为第几个菜单
         {
             state = mouse_press(8+x*MENU_W,y,8+x*MENU_W+SUBMENU_W,y+SUBMENU_H);
             //若是按下鼠标且菜单有对应的函数
-            if (state == 1&&(subm->pf != NULL))
+            if (state == 1&&(subm->pf))
             {
                 subm->pf();
                 return 1;

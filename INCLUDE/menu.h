@@ -17,7 +17,11 @@ typedef struct
     void (*pf)();
 } MENU;
 
-void dialog_state(void);
+extern MENU menulist[MENU_LEN];
+extern MENU submenu[MENU_LEN][SUBMENU_LEN];
+
+void start_exit_dialog(void);
+void start_open_dialog(void);
 
 void show_menu(int);//显示菜单
 
