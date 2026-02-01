@@ -1,354 +1,297 @@
-#include"mouse.h"
-#include <dos.h>
-#include <stdio.h>
-#include <conio.h>
-#include <stdlib.h>
-#include "SVGA.h"
-//#include "draw.h"
-#define  H 15
-#define  W 12
+#include <conio.h>    // 包含标准输入输出函数
+#include <graphics.h> // 包含图形库函数
+#include <dos.h>      // 包含DOS中断调用函数
+#include <stdio.h>    // 包含标准输入输出
+#include <stdlib.h>   // 包含标准库函数
+#include <time.h>
+#include "mouse.h" // 包含鼠标头文件
 
+// 全局变量定义
+int MouseX;      // 鼠标当前X坐标
+int MouseY;      // 鼠标当前Y坐标
+int MouseS;      // 鼠标状态（按钮状态等）
+int press;       // 鼠标按键状态（是否按下）
+void *buffer;    // 用于保存鼠标背景的缓冲区
+union REGS regs; // DOS中断寄存器结构
+int flag = 0;    // 标志变量，用于判断鼠标是否初始化成功
 
-
-int mouse_shape[H][W] =    //鼠标形状二维数组
+// 初始化鼠标
+void mouseinit()
 {
-    {1,1,0,0,0,0,0,0,0,0,0,0},
-	{1,2,1,0,0,0,0,0,0,0,0,0},
-	{1,2,2,1,0,0,0,0,0,0,0,0},
-	{1,2,2,2,1,0,0,0,0,0,0,0},
-	{1,2,2,2,2,1,0,0,0,0,0,0},
-	{1,2,2,2,2,2,1,0,0,0,0,0},
-	{1,2,2,2,2,2,2,1,0,0,0,0},
-	{1,2,2,2,2,2,2,2,1,0,0,0},
-	{1,2,2,2,2,2,2,2,2,1,0,0},
-	{1,2,2,2,2,2,2,2,2,2,1,0},
-	{1,2,2,2,2,2,2,1,1,1,1,1},
-	{1,2,2,1,2,2,2,1,0,0,0,0},
-	{1,2,1,0,1,2,2,2,1,0,0,0},	
-	{1,1,0,0,0,1,2,2,2,1,0,0},	
-	{1,0,0,0,0,0,1,1,1,1,0,0}
-		    			
-};
+    int retcode;                  // 返回值q
+    int xmin, xmax, ymin, ymax;   // 鼠标活动区域
+    int x_max = 625, y_max = 480; // 屏幕最大坐标
+    int size;
 
-unsigned int mouse_bk[20][20];           //存放被鼠标覆盖的区域
-MOUSE mouse={0,0,0};            //定义一个鼠标结构变量
- 
+    // 设置鼠标活动区域
+    xmin = 2;
+    xmax = x_max - 1;
+    ymin = 8;
+    ymax = y_max - 2;
 
+    // 调用 DOS中断 初始化鼠标
+    regs.x.ax = 0;           // 初始化鼠标
+    int86(51, &regs, &regs); // 调用中断
+    retcode = regs.x.ax;     // 获取返回值
 
+    // 检查鼠标是否初始化成功
+    if (retcode == 0)
+    {
+        printf("Mouse or Mouse Driver Missing, Please Install!\n");
+        delay(5000); // 延时5秒
+    }
+    else
+    {
+        // 设置鼠标水平活动范围
+        regs.x.ax = 7;
+        regs.x.cx = xmin;
+        regs.x.dx = xmax;
+        int86(51, &regs, &regs);
 
-/***鼠标初始化***/
-void mouse_init()
+        // 设置鼠标垂直活动范围
+        regs.x.ax = 8;
+        regs.x.cx = ymin;
+        regs.x.dx = ymax;
+        int86(51, &regs, &regs);
+
+        // 初始化鼠标状态
+        MouseS = 0;
+        MouseX = 320;          // 鼠标初始X坐标
+        MouseY = 240;          // 鼠标初始Y坐标
+        save_bk_mou(320, 240); // 保存鼠标初始位置的背景
+        mouse(MouseX, MouseY); // 绘制鼠标光标
+        flag = 1;              // 标志设置为1，表示鼠标初始化成功
+    }
+}
+
+// 绘制鼠标光标
+void mouse(int x, int y)
 {
-	MouseInit();                  //鼠标复位，检测是否安装鼠标
-	MouseRange(0,0,1012,752);         //鼠标范围设置
-	MouseGet(&mouse);                  //得到鼠标状态
-	MouseSpeed(6,4);
-	mouse_on(mouse);                 //显示鼠标
+    switch (MouseS)
+    {
+    case 1: // 鼠标左键按下
+    {
+        // 绘制鼠标光标图形（具体图形由line和arc函数定义）
+        setcolor(WHITE);       // 设置颜色为白色
+        setlinestyle(0, 0, 1); // 设置线条样式为实线
+
+        // 绘制鼠标光标的轮廓（白色部分）
+        line(x - 1, y + 9, x - 1, y + 8);
+        line(x, y + 7, x, y + 11);
+        line(x + 1, y + 6, x + 1, y + 13);
+        line(x + 2, y + 8, x + 2, y + 14);
+        line(x + 3, y - 1, x + 3, y + 15);
+        arc(x + 4, y - 1, 0, 180, 1); // 绘制上半圆
+        line(x + 4, y - 2, x + 4, y + 15);
+        line(x + 5, y - 1, x + 5, y + 16);
+        arc(x + 6, y + 3, 0, 180, 1); // 绘制上半圆
+        line(x + 6, y + 2, x + 6, y + 16);
+        line(x + 7, y + 3, x + 7, y + 17);
+        arc(x + 8, y + 5, 0, 180, 1); // 绘制上半圆
+        line(x + 8, y + 4, x + 8, y + 17);
+        line(x + 9, y + 5, x + 9, y + 16);
+        arc(x + 10, y + 7, 0, 180, 1); // 绘制上半圆
+        line(x + 10, y + 6, x + 10, y + 16);
+        line(x + 11, y + 7, x + 11, y + 13);
+
+        // 绘制鼠标光标的阴影部分（深灰色部分）
+        setcolor(DARKGRAY); // 设置颜色为深灰色
+        line(x - 1, y + 9, x - 1, y + 8);
+        line(x - 1, y + 8, x + 1, y + 6);
+        line(x + 1, y + 6, x + 3, y + 10);
+        line(x + 3, y + 10, x + 3, y - 1);
+        arc(x + 4, y - 1, 0, 180, 1); // 绘制上半圆
+        line(x + 5, y - 1, x + 5, y + 5);
+        arc(x + 6, y + 3, 0, 180, 1); // 绘制上半圆
+        line(x + 7, y + 3, x + 7, y + 7);
+        arc(x + 8, y + 5, 0, 180, 1); // 绘制上半圆
+        line(x + 9, y + 5, x + 9, y + 9);
+        arc(x + 10, y + 7, 0, 180, 1); // 绘制上半圆
+        line(x + 11, y + 7, x + 11, y + 13);
+        arc(x + 7, y + 13, -90, 0, 4); // 绘制右上角的圆弧
+        line(x + 7, y + 17, x + 3, y + 15);
+        line(x + 3, y + 15, x + 1, y + 13);
+        line(x + 1, y + 13, x - 1, y + 9);
+    }
+    break;
+
+    case 2: // 鼠标右键按下
+    {
+        // 绘制鼠标光标图形（具体图形由line和arc函数定义）
+        setcolor(DARKGRAY);    // 设置颜色为深灰色
+        setlinestyle(0, 0, 1); // 设置线条样式
+        // 绘制鼠标光标的具体线条和弧形
+        line(x + 1, y - 1, x + 9, y - 1);
+        line(x + 1, y + 15, x + 9, y + 15);
+        line(x + 5, y - 1, x + 5, y + 15);
+    }
+    break;
+
+    case 3: // 鼠标中键按下
+    {
+        // 绘制鼠标光标图形（具体图形由line和arc函数定义）
+        setcolor(WHITE);       // 设置颜色为白色
+        setlinestyle(0, 0, 1); // 设置线条样式
+        // 绘制鼠标光标的具体线条和弧形
+        line(x - 1, y + 7, x + 11, y + 7);
+        line(x + 5, y - 1, x + 5, y + 15);
+    }
+    break;
+
+    default: // 鼠标未按下
+    {
+        // 设置线条样式和颜色
+        setlinestyle(0, 0, 1); // 设置为实线
+        setcolor(WHITE);       // 设置颜色为白色
+
+        // 绘制鼠标光标的主体部分（白色线条）
+        line(x, y, x, y + 13);              // 垂直线
+        line(x + 1, y + 1, x + 1, y + 12);  // 垂直线
+        line(x + 2, y + 2, x + 2, y + 11);  // 垂直线
+        line(x + 3, y + 3, x + 3, y + 10);  // 垂直线
+        line(x + 4, y + 4, x + 4, y + 12);  // 垂直线
+        line(x + 5, y + 5, x + 5, y + 9);   // 垂直线
+        line(x + 5, y + 11, x + 5, y + 14); // 垂直线
+        line(x + 6, y + 6, x + 6, y + 9);   // 垂直线
+        line(x + 6, y + 13, x + 6, y + 15); // 垂直线
+        line(x + 7, y + 7, x + 7, y + 9);   // 垂直线
+        line(x + 8, y + 8, x + 8, y + 9);   // 垂直线
+        line(x + 9, y + 9, x + 9, y + 9);   // 垂直线
+
+        // 切换颜色绘制阴影部分
+        setcolor(DARKGRAY); // 设置颜色为深灰色
+
+        // 绘制鼠标光标的阴影部分（深灰色线条）
+        line(x - 1, y - 1, x - 1, y + 14);   // 左侧阴影
+        line(x - 1, y + 14, x + 3, y + 11);  // 底部阴影
+        line(x + 3, y + 11, x + 3, y + 12);  // 右侧阴影
+        line(x + 3, y + 12, x + 4, y + 13);  // 右侧阴影
+        line(x + 4, y + 13, x + 4, y + 14);  // 右侧阴影
+        line(x + 4, y + 14, x + 7, y + 17);  // 右侧阴影
+        line(x + 7, y + 17, x + 7, y + 13);  // 右侧阴影
+        line(x + 7, y + 13, x + 6, y + 12);  // 右侧阴影
+        line(x + 6, y + 12, x + 6, y + 11);  // 右侧阴影
+        line(x + 6, y + 11, x + 5, y + 10);  // 右侧阴影
+        line(x + 5, y + 10, x + 11, y + 10); // 右侧阴影
+        line(x + 11, y + 10, x - 1, y - 2);  // 右侧阴影
+    }
+    break;
+    }
 }
 
-
-/***鼠标复位***/
-void MouseInit()
+// 读取鼠标状态
+void mread(int *nx, int *ny, int *nbuttons)
 {
-	union REGS regs;
-	regs.x.ax=0;
-	int86(0x33,&regs,&regs);
-	if(regs.x.ax==0)
-	{
-		printf("mouse error");
-		delay(5000);
-		exit(1);
-	}
+    // 调用DOS中断获取鼠标状态
+    regs.x.ax = 3; // 获取鼠标位置和按钮状态
+    int86(51, &regs, &regs);
+    *nx = regs.x.cx;       // 获取鼠标X坐标
+    *ny = regs.x.dx;       // 获取鼠标Y坐标
+    *nbuttons = regs.x.bx; // 获取鼠标按钮状态
 }
-/********************************
-	功能说明：设置鼠标计数与像素比,值越大鼠标移动速度越慢 
-	参数说明：int   vx,	鼠标横向的；int   vy	鼠标纵向的
-**
-********************************/
-void MouseSpeed(int x, int y)
+
+void newmouse(int *nx, int *ny, int *nbuttons)
 {
-	union REGS regs;
-	regs.x.ax=0x0f;
-	regs.x.cx=x;
-    regs.x.dx=y;
-	int86(0x33,&regs,&regs);
+    int xn, yn, buttonsn;                         // 新的鼠标位置和按钮状态
+    int x0 = *nx, y0 = *ny, buttons0 = *nbuttons; // 旧的鼠标位置和按钮状态
+
+    // 读取新的鼠标状态
+    mread(&xn, &yn, &buttonsn);
+    *nx = xn;
+    *ny = yn;
+    *nbuttons = buttonsn;
+
+    // 判断鼠标位置和按钮状态是否发生变化
+    if (buttons0 != buttonsn)
+    {
+        // 如果按钮状态发生变化，则更新按钮状态
+        *nbuttons = buttonsn;
+    }
+    if (xn == x0 && yn == y0 && buttons0 == buttonsn)
+    {
+        return; // 如果鼠标状态未改变，则直接返回
+    }
+
+    // 清除旧的鼠标光标
+    clrmous(x0, y0);
+    // 保存新位置的背景
+    save_bk_mou(*nx, *ny);
+    // 绘制新的鼠标光标
+    drawmous(*nx, *ny);
 }
-/**********************************************************************
-	功能说明：设置鼠标灵敏度；设置鼠标倍速阈值；
-	参数说明：x为水平灵敏度，y为竖直灵敏度,v为鼠标即将设定的倍速阈值
-	返回值说明：无
-*********************************************************************/
-void SetMouseSen(int x,int y)
+
+// 保存鼠标背景
+void save_bk_mou(int nx, int ny)
 {
-	union REGS regs;
-    regs.x.ax=0x1a;
-	regs.x.bx=x;
-	regs.x.cx=y;
-   // regs.x.dx=v;
-	int86(51,&regs,&regs);
+    int size; // 背景图像大小
+    // 计算鼠标光标区域的大小
+    size = imagesize(nx - 1, ny - 2, nx + 11, ny + 17);
+    buffer = malloc(size); // 分配内存用于保存背景
+    if (buffer != NULL)
+    {
+        getimage(nx - 1, ny - 2, nx + 11, ny + 17, buffer); // 保存鼠标光标区域的背景
+    }
+    else
+    {
+        printf("Error: Unable to allocate memory for mouse background.\n");
+    }
 }
-/***得到某一点的颜色值***/
-unsigned int Getpixel64k(int x, int y)
+
+// 清除鼠标光标
+void clrmous(int nx, int ny)
 {
-	unsigned int far * const video_buffer = (unsigned int far *)0xa0000000L;
-	unsigned char page;                                                  //要切换的页面号
-	unsigned long int page_dev;                                           //对应显存地址偏移量                       
-	if(x < 0 || x > (SCR_WIDTH - 1) || y < 0 || y > (SCR_HEIGHT - 1))           //判断点是否在屏幕范围内，不在就退出 
-	{
-		printf("out of range");
-	}
-	page_dev = ((unsigned long int)y << 10) + x;                              //计算显存地址偏移量和对应的页面号，做换页操作
-	page = page_dev >> 15;	//32k个点一换页，除以32k的替代算法
-	Selectpage(page);
-	return video_buffer[page_dev];	 //返回颜色
+    if (flag == 1)
+    {
+        setwritemode(XOR_PUT);                      // 设置写模式为异或模式
+        mouse(nx, ny);                              // 绘制鼠标光标（异或模式下会清除光标）
+        putimage(nx - 1, ny - 2, buffer, COPY_PUT); // 恢复背景
+        free(buffer);                               // 释放背景内存
+        flag = 0;                                   // 标志设置为0，表示鼠标光标已清除
+        setwritemode(COPY_PUT);                     // 恢复默认写模式
+    }
 }
 
-/***鼠标范围设置***/
-void MouseRange(int x1, int y1, int x2, int y2)
+// 清除鼠标状态
+void clearEvents()
 {
-	union REGS mouse;
-	/*设置横坐标范围*/
-	mouse.x.ax = 7;
-	mouse.x.cx = x1;
-	mouse.x.dx = x2;
-	int86(0x33, &mouse, &mouse);
-	/*设置纵坐标范围*/
-	mouse.x.ax = 8;
-	mouse.x.cx = y1;
-	mouse.x.dx = y2;
-	int86(0x33, &mouse, &mouse);
+    union REGS inregs, outregs; // 定义寄存器结构
+    // 调用鼠标中断 0x33，功能号 0x0A：清除鼠标事件队列
+    inregs.h.ah = 0x0A;
+    int86(0x33, &inregs, &outregs); // 调用中断
 }
 
-
-/***得到鼠标按键状态(不传递鼠标坐标)***/
-int MouseBut(MOUSE * mouse)
-{ 
-	union REGS regs;
-	regs.x.ax = 3;
-	int86(0x33, &regs, &regs);
-	mouse->key = regs.x.bx;
-	return mouse->key;     
-}
-
-
-/***得到鼠标位置，按键状态***/
-int MouseGet(MOUSE * mouse)
-{ 
-	union REGS regs;
-	regs.x.ax = 3;
-	int86(0x33, &regs, &regs);
-	mouse->x = regs.x.cx;
-	mouse->y = regs.x.dx;
-	mouse->key = regs.x.bx;
-	return mouse->key;
-}
-
-/***设置鼠标显示位置***/
-void MouseSet(int x,int y)
+// 绘制鼠标光标
+void drawmous(int nx, int ny)
 {
-	union REGS regs;
-    regs.x.ax=4;
-	regs.x.cx=x;
-    regs.x.dx=y;
-	int86(0x33,&regs,&regs);      //设置鼠标当前坐标	
-	mouse_on(mouse);               //画鼠标	
+    if (flag == 0)
+    {
+        setwritemode(COPY_PUT); // 设置写模式为复制模式
+        mouse(nx, ny);          // 绘制鼠标光标
+        flag = 1;               // 标志设置为1，表示鼠标光标已绘制
+    }
 }
 
-/***判断鼠标是否在指定区域内部***
-int MouseIn(int x1, int y1, int x2, int y2)
-{ 
-	MOUSE mouse = {0,0,0};                       //very important，设置一个鼠标结构，用来减少对主鼠标结构的调用 
-	MouseGet(&mouse);       
-	if ((mouse.x >= x1)
-		&& (mouse.x <= x2)
-		&& (mouse.y >= y1)
-		&& (mouse.y <= y2))
-	{
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-}
-**************************************************/
-
-/***判断鼠标左键是否在指定区域内按下***/
+// 检测鼠标是否在指定区域内点击
 int mouse_press(int x1, int y1, int x2, int y2)
-{ 
-	MOUSE mouse = {0,0,0};                       
-	MouseGet(&mouse);       
-	if ((mouse.x >= x1)
-		&& (mouse.x <= x2)
-		&& (mouse.y >= y1)
-		&& (mouse.y <= y2)
-		&& ((mouse.key & 1) == 1))
-	{
-		return 1;
-	}
-	else if ((mouse.x >= x1)
-		&& (mouse.x <= x2)
-		&& (mouse.y >= y1)
-		&& (mouse.y <= y2))
-	{
-		return 2;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-/***鼠标显示***/
-void mouse_on(MOUSE mouse)
 {
-	int i, j;
-	for (i = 0; i < H; i++)
-	{
-		for (j = 0; j < W; j++)
-		{
-			
-			mouse_bk[i][j] = Getpixel64k(j + mouse.x, i + mouse.y);  //存储鼠标覆盖区
-			/***画鼠标***/
-			if (mouse_shape[i][j] == 1)
-				Putpixel64k(mouse.x + j, mouse.y + i, 0);
-			else if (mouse_shape[i][j] == 2)
-				Putpixel64k(mouse.x + j, mouse.y + i, 0xffff);
-		}
-	}
-
-}
-
-
-/***鼠标每次移动重新显示***/
-void mouse_show(MOUSE *mouse)
-{  
-	int i,j;       //循环变量
-	int color;     //鼠标某点颜色
-	int x,y;
-	x=mouse->x;             //鼠标原位置坐标
-	y=mouse->y;         
-	MouseGet(mouse);    //得到新鼠标状态
-	if(mouse->x!=x||mouse->y!=y)         //鼠标移动就重新画鼠标
-	{
-		for (i = 0; i < H; i++)           	
-		{
-			for (j = 0; j < W; j++)
-			{
-				if (mouse_shape[i][j] == 0)
-					continue;
-				Putpixel64k(x + j, y + i, mouse_bk[i][j]);   //画出原鼠标覆盖区
-			}
-		}
-		mouse_on(*mouse);                            //在新位置显示鼠标
-	}
-}
-
-/***鼠标隐藏***/
-void mouse_off(MOUSE *mouse)
-{
-	int i,j;
-	int x,y;
-	x=mouse->x;
-	y=mouse->y;
-	for (i = 0; i <H; i++)
-		for (j = 0; j < W; j++)
-		{
-			if (mouse_shape[i][j] == 0)
-				continue;
-			Putpixel64k(x + j, y + i, mouse_bk[i][j]);   //画出原鼠标覆盖区
-		}
-}
-
-/*初始化鼠标，设置水平垂直方向像素比相等*/
-void Curinit()
-{
-	_AX=0;
-	geninterrupt(0x33);
-	if(_AX==0)
-		puts("mouse init fail!");
-	_AX=7;
-	_CX=10;
-	_DX=1000;
-	geninterrupt(0x33);
-	_AX=8;
-	_CX=10;
-	_DX=750;
-	geninterrupt(0x33);
-}
-
-void draw_mouse(int mx,int my)
-{
-	int i, j;
-	for (i = 0; i < H; i++)
-	{
-		for (j = 0; j < W; j++)
-		{
-			/***画鼠标***/
-			if (mouse_shape[i][j] == 1)
-				Putpixel64k(mx + j, my + i, 0);
-			else if (mouse_shape[i][j] == 2)
-				Putpixel64k(mx + j, my + i, 0xffff);
-		}
-	}
-}
-
-void CurShow()
-{
-	Cursor(500,500,2);
-}
-
-void Curhide()
-{
-	Cursor(500,500,1);
-}
-
-void Cursor(int x,int y,int flag)
-{
-	static unsigned int far *tempgraph;
-	static int mx,my;
-    if(tempgraph==NULL)
-	{
-		tempgraph=malloc(1000);
-	}
-	if(1<=x&&x<=1000&&1<=y&&y<=750)
-	{
-		switch(flag)
-		{			
-		case 1:	//hidemouse
-			Put_image(mx,my,mx+16,my+15,tempgraph);
-			//delay(20);
-			break;
-		case 2:	//showmouse
-			do
-			{
-				_AX=3;
-				geninterrupt(0x33);
-				mx=_CX;
-				my=_DX;
-			}
-			while(1>=mx||mx>=1000||1>=my||my>=750);
-			Get_image(mx,my,mx+16,my+15,tempgraph);
-			draw_mouse(mx,my);
-			break;
-		}
-	}
-}
-
-void getmouse(int *button,int *x,int *y)//得到鼠标状态
-{
-	static int mx,my,mbutton;
-	_AX=3;
-	geninterrupt(0x33);
-	mbutton=_BL;
-	mx=_CX;
-	my=_DX;
-	Cursor(mx,my,0);
-	if(button!=NULL)
-		*button=mbutton;
-	if(x!=NULL&&y!=NULL)
-	{
-		*x=mx;
-		*y=my;
-	}
+    // 如果鼠标在区域内且左键按下
+    if (MouseX > x1 && MouseX < x2 && MouseY > y1 && MouseY < y2 && MouseS == 1)
+    {
+        return 1; // 返回1表示左键点击
+    }
+    // 如果鼠标在区域内但未按下
+    else if (MouseX > x1 && MouseX < x2 && MouseY > y1 && MouseY < y2 && MouseS == 0)
+    {
+        return 2; // 返回2表示鼠标悬停
+    }
+    // 如果鼠标在区域内且右键按下
+    else if (MouseX > x1 && MouseX < x2 && MouseY > y1 && MouseY < y2 && MouseS == 2)
+    {
+        return 3; // 返回3表示右键点击
+    }
+    // 如果鼠标不在区域内
+    else
+    {
+        return 0; // 返回0表示无操作
+    }
 }

@@ -162,7 +162,7 @@ void Initialize(void)
   getpalette( &palette );		/* Read the palette from board	*/
   MaxColors = getmaxcolor() + 1;	/* Read maximum number of colors*/
 
-  MaxX = getmaxx();
+  MaxX = 633;
   MaxY = getmaxy();			/* Read size of screen		*/
 
   getaspectratio( &xasp, &yasp );	/* read the hardware aspect	*/
@@ -203,7 +203,7 @@ void ReportStatus(void)
 
   gprintf( &x, &y, "Graphics device    : %-20s (%d)", driver, GraphDriver );
   gprintf( &x, &y, "Graphics mode      : %-20s (%d)", mode, GraphMode );
-  gprintf( &x, &y, "Screen resolution  : ( 0, 0, %d, %d )", getmaxx(), getmaxy() );
+  gprintf( &x, &y, "Screen resolution  : ( 0, 0, %d, %d )", 633, getmaxy() );
 
   gprintf( &x, &y, "Current view port  : ( %d, %d, %d, %d )",
   viewinfo.left, viewinfo.top, viewinfo.right, viewinfo.bottom );
@@ -362,8 +362,8 @@ void RandomBars(void)
     color = random( MaxColors-1 )+1;
     setcolor( color );
     setfillstyle( random(11)+1, color );
-    bar3d( random( getmaxx() ), random( getmaxy() ),
-	   random( getmaxx() ), random( getmaxy() ), 0, OFF);
+    bar3d( random( 633 ), random( getmaxy() ),
+	   random( 633 ), random( getmaxy() ), 0, OFF);
   }
 
   Pause();				/* Pause for user's response    */

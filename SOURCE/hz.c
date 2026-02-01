@@ -1,17 +1,17 @@
 #include "hz.h"
 
-/*16Î»µãÕóºº×ÖÊä³ö£¬x,y±íÊ¾ºº×ÖÊä³öÎ»ÖÃ£¬sÎªºº×Ö´®£¬color±íÊ¾ºº×ÖÑÕÉ«£¬
-name Îªºº×Ö¿âÎÄ¼þÂ·¾¶£¬¼´×ÖÌåÐÅÏ¢*/
+/*16Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½x,yï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½sÎªï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½colorï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½
+name Îªï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
 void prt_hz16(int x, int y, char *s, unsigned int color, char * name) 
 {
 	FILE * fp=NULL;
-	char buffer[32]={0};                                          //ÓÃÀ´¶ÁÈ¡16ºº×ÖµÄ32Î»×ÖÄ£
+	char buffer[32]={0};                                          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡16ï¿½ï¿½ï¿½Öµï¿½32Î»ï¿½ï¿½Ä£
 	int i=0;
 	int j=0;
 	unsigned char qh =0;     
-    unsigned char wh =0; 	     //ºº×ÖÇøÎ»ºÅ
-	unsigned long offset=0;     //ºº×ÖÄÚÂë
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³öÃ¿Ò»Î»µÄÐÅÏ¢
+    unsigned char wh =0; 	     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	unsigned long offset=0;     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
 	if((fp=fopen(name,"rb"))==NULL)
 	{
@@ -19,42 +19,42 @@ void prt_hz16(int x, int y, char *s, unsigned int color, char * name)
 		getch();
 		exit(0);
 	}
-	while(*s)                                         //Èôºº×Ö´®Î´¶ÁÍê£¬Ôò¼ÌÐø
+	while(*s)                                         //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Î´ï¿½ï¿½ï¿½ê£¬ï¿½ï¿½ï¿½ï¿½ï¿½
     {
-		qh=* s-160;                                       //µÃµ½ºº×ÖÄÚÂë
+		qh=* s-160;                                       //ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         wh=*(s+1) -160;
-        offset=(94*(qh-1)+(wh-1))*32L;                     //¼ÆËãÎ»ÒÆÁ¿
-        fseek(fp,offset, SEEK_SET);                        //ºº×Ö¿âÎÄ¼þÖÐ²éÕÒÄÚÂëÎ»ÖÃ
-        fread(buffer, 32, 1, fp);                          //¶ÁÈ¡ÏàÓ¦Î»ÖÃµÄ×ÖÄ£
-        for(i=0;i<16;i++)                                  //ÔÚÖ¸¶¨µãÊä³öÒ»¸öºº×Ö
+        offset=(94*(qh-1)+(wh-1))*32L;                     //ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
+        fseek(fp,offset, SEEK_SET);                        //ï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+        fread(buffer, 32, 1, fp);                          //ï¿½ï¿½È¡ï¿½ï¿½Ó¦Î»ï¿½Ãµï¿½ï¿½ï¿½Ä£
+        for(i=0;i<16;i++)                                  //ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				for(j=0;j<16;j++)
 				{
 					if((mask[j%8] & buffer[i*2+j/8])!=0)
 					{
-						Putpixel64k(x+j,y+i,color);
+						putpixel(x+j,y+i,color);
 					}
 				}
 			}
-			x+=16;                                          //ºáÏòÊä³ö£¬¼ä¾àÎª16
-			s+=2;                                           //¶ÁÈ¡ÏÂÒ»¸öºº×Ö
+			x+=16;                                          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª16
+			s+=2;                                           //ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
     fclose(fp);
 }
 
 
-/*(ÓÐÑÓ³Ù)24Î»µãÕóºº×ÖÊä³ö£¬x,y±íÊ¾ºº×ÖÊä³öÎ»ÖÃ£¬sÎªºº×Ö´®£¬color±íÊ¾ºº×ÖÑÕÉ«£¬
-name Îªºº×Ö¿âÎÄ¼þÂ·¾¶£¬¼´×ÖÌåÐÅÏ¢*/
+/*(ï¿½ï¿½ï¿½Ó³ï¿½)24Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½x,yï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½sÎªï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½colorï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½
+name Îªï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
 void prt_hz24(int x, int y,char * s, unsigned int color, char * name)    
 {
 	FILE * fp=NULL;
-	char buffer[72]={0};                                            //ÓÃÀ´¶ÁÈ¡24ºº×ÖµÄ72Î»×ÖÄ£
+	char buffer[72]={0};                                            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡24ï¿½ï¿½ï¿½Öµï¿½72Î»ï¿½ï¿½Ä£
 	int i=0;
 	int j=0;
 	unsigned char qh=0;
 	unsigned char wh=0;
 	unsigned long offset=0;
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³öÃ¿Ò»Î»µÄÐÅÏ¢
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
 	if((fp=fopen(name,"rb"))==NULL)
 	{
@@ -69,17 +69,17 @@ void prt_hz24(int x, int y,char * s, unsigned int color, char * name)
         offset=(94*(qh-1)+(wh-1))*72L;             
         fseek(fp,offset, SEEK_SET);
 		fread(buffer, 72, 1, fp);
-        for(i=0; i<24; i++)                                 //Êä³öÒ»¸öºº×Ö
+        for(i=0; i<24; i++)                                 //ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
            for(j=0;j<24;j++)
 			{
 				if((mask[j%8] & buffer[i*3+j/8])!=0)
 				{
-					Putpixel64k(x+j,y+i,color);
+					putpixel(x+j,y+i,color);
 				}					
 			}
         s+=2;
-        x+=24;                                         //ÐÐÊä³ö£¬¼ä¾à24
-		delay(50);                                   //Ê¹Ã¿¸öºº×ÖÊä³ö¹ý³Ì¿É¼û£¬Æðµ½ÃÀ»¯Ð§¹ûµÄ×÷ÓÃ
+        x+=24;                                         //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½24
+		delay(50);                                   //Ê¹Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿É¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
     fclose(fp);
 }
@@ -87,18 +87,18 @@ void prt_hz24(int x, int y,char * s, unsigned int color, char * name)
 
 
 
-/*x,y±íÊ¾ºº×ÖÊä³öÎ»ÖÃ£¬sÎªºº×Ö´®£¬color±íÊ¾ºº×ÖÑÕÉ«£¬
-name Îªºº×Ö¿âÎÄ¼þÂ·¾¶£¬¼´×ÖÌåÐÅÏ¢*/
+/*x,yï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½sÎªï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½colorï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½
+name Îªï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
 void prt_hz24d(int x, int y,char * s, unsigned int color, char * name)    
 {
 	FILE * fp=NULL;
-	char buffer[72]={0};                                             //ÓÃÀ´¶ÁÈ¡24ºº×ÖµÄ72Î»×ÖÄ£
+	char buffer[72]={0};                                             //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡24ï¿½ï¿½ï¿½Öµï¿½72Î»ï¿½ï¿½Ä£
 	int i=0;
 	int j=0;
 	unsigned char qh=0;
 	unsigned char wh=0;
 	unsigned long offset=0;
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³öÃ¿Ò»Î»µÄÐÅÏ¢
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
 	if((fp=fopen(name,"rb"))==NULL)
 	{
@@ -113,21 +113,21 @@ void prt_hz24d(int x, int y,char * s, unsigned int color, char * name)
         offset=(94*(qh-1)+(wh-1))*72L;             
         fseek(fp,offset, SEEK_SET);
 		fread(buffer, 72, 1, fp);
-        for(i=0; i<24; i++)                                 //Êä³öÒ»¸öºº×Ö
+        for(i=0; i<24; i++)                                 //ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
            for(j=0;j<24;j++)
 			{
 				if((mask[j%8] & buffer[i*3+j/8])!=0)
 				{
-					Putpixel64k(x+j,y+i,color);
+					putpixel(x+j,y+i,color);
 				}					
 			}
            s+=2;
-           x+=24;                                         //ÐÐÊä³ö£¬¼ä¾à24
+           x+=24;                                         //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½24
     }
     fclose(fp);
 }
 
-void prt_asc16( int x,int y,char * s,unsigned int color)		//Êä³öÒ»´®Ó¢ÎÄº¯Êý
+void prt_asc16( int x,int y,char * s,unsigned int color)		//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ó¢ï¿½Äºï¿½ï¿½ï¿½
 {
 
 	FILE *  fp=NULL;
@@ -142,17 +142,17 @@ void prt_asc16( int x,int y,char * s,unsigned int color)		//Êä³öÒ»´®Ó¢ÎÄº¯Êý
 	}
 	while(*s)
         { 
-	offset=*s * 16L;                         	//¼ÆËãÎ»ÒÆÁ¿
+	offset=*s * 16L;                         	//ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
 	fseek(fp,offset,0);
-	fread(buffer,16,1,fp);                        	//¶Á³ö×ÖÄ£ÐÅÏ¢
+	fread(buffer,16,1,fp);                        	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ï¢
 	
 	for(i=0;i<16;i++)
 	{
 		for(j=0;j<8;j++)
 		{
-			if((buffer[i]>>(7-j))&0x1)    	//Îª1µÄÎ»ÏÔÊ¾
+			if((buffer[i]>>(7-j))&0x1)    	//Îª1ï¿½ï¿½Î»ï¿½ï¿½Ê¾
 			{
-				Putpixel64k(x+j,y+i,color);
+				putpixel(x+j,y+i,color);
 			}
 		}
 	}
@@ -162,7 +162,7 @@ void prt_asc16( int x,int y,char * s,unsigned int color)		//Êä³öÒ»´®Ó¢ÎÄº¯Êý
 	fclose(fp);
 }
 
-void prt_asc16_ch( int x,int y,char s,unsigned int color)		//Êä³öÒ»¸öÓ¢ÎÄº¯Êý
+void prt_asc16_ch( int x,int y,char s,unsigned int color)		//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ó¢ï¿½Äºï¿½ï¿½ï¿½
 {
 
 	FILE *  fp=NULL;
@@ -170,7 +170,7 @@ void prt_asc16_ch( int x,int y,char s,unsigned int color)		//Êä³öÒ»¸öÓ¢ÎÄº¯Êý
 	int j=0;
 	unsigned long offset=0;
 	char buffer[16]={0};
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³öÃ¿Ò»Î»µÄÐÅÏ¢
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
 	if ((fp=fopen("hzk\\ASC16","rb"))==NULL)
 	{
@@ -178,16 +178,16 @@ void prt_asc16_ch( int x,int y,char s,unsigned int color)		//Êä³öÒ»¸öÓ¢ÎÄº¯Êý
 				  getch();		
                      exit(1);
 	}
-	offset=s * 16L;                         	//¼ÆËãÎ»ÒÆÁ¿
+	offset=s * 16L;                         	//ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
 	fseek(fp,offset,0);
-	fread(buffer,16,1,fp);                        	//¶Á³ö×ÖÄ£ÐÅÏ¢	
+	fread(buffer,16,1,fp);                        	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ï¢	
 	for(i=0;i<16;i++)
 	{
 		for(j=0;j<8;j++)
 		{
 			if((mask[j] & buffer[i])!=0)    	
 			{
-				Putpixel64k(x+j,y+i,color);
+				putpixel(x+j,y+i,color);
 			}
 		}
 	}
@@ -204,9 +204,9 @@ void Read_Asc16(char key,unsigned char *buffer)
 				  getch();		
                      exit(1);
 	}
-	offset=key* 16L;                         	//¼ÆËãÎ»ÒÆÁ¿
+	offset=key* 16L;                         	//ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
 	fseek(fp,offset,0);
-	fread(buffer,16,1,fp);                    //¶Á³ö×ÖÄ£ÐÅÏ¢	
+	fread(buffer,16,1,fp);                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ï¢	
 	fclose(fp);
 }
 
@@ -215,16 +215,16 @@ void Put_Asc16(int x,int y,char key,unsigned int color)
     int i=0;
 	int j=0;
     unsigned char buffer[16];
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³öÃ¿Ò»Î»µÄÐÅÏ¢
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
     Read_Asc16(key,buffer);
     for(i=0;i<16;i++)
         for(j=0;j<8;j++)
             if((mask[j] & buffer[i])!=0)
-                Putpixel64k(x+i,y+j,color);
+                putpixel(x+i,y+j,color);
 }
 
-/*ÏÔÊ¾·Å´óºóµÄÓ¢ÎÄ×Ö·û*/
+/*ï¿½ï¿½Ê¾ï¿½Å´ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½ï¿½Ö·ï¿½*/
 void Put_Asc16_Size(int x,int y,int xsize,int ysize,char key,unsigned int color)
 {
 	int i=0;
@@ -232,7 +232,7 @@ void Put_Asc16_Size(int x,int y,int xsize,int ysize,char key,unsigned int color)
 	int m=0;
 	int n=0;
 	unsigned char buffer[16]={0};
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³öÃ¿Ò»Î»µÄÐÅÏ¢
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
 	Read_Asc16(key,buffer);
 	for(i=0;i<16;i++)
@@ -240,10 +240,10 @@ void Put_Asc16_Size(int x,int y,int xsize,int ysize,char key,unsigned int color)
 	        for(m=1;m<=ysize;m++)
 				for(n=1;n<=xsize;n++)
 					if((mask[j] & buffer[i])!=0)
-				        Putpixel64k(x+j*xsize+n,y+m+i*ysize,color);
+				        putpixel(x+j*xsize+n,y+m+i*ysize,color);
 }
 
-/*ÏÔÊ¾·Å´óºóµÄÓ¢ÎÄºÍÊý×Ö×Ö·û´®*/
+/*ï¿½ï¿½Ê¾ï¿½Å´ï¿½ï¿½ï¿½Ó¢ï¿½Äºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½*/
 void put_asc16_size(int x,int y,int xsize,int ysize,char *s,unsigned int color )
 {
     int i=0;
@@ -253,7 +253,7 @@ void put_asc16_size(int x,int y,int xsize,int ysize,char *s,unsigned int color )
     }
 }
 
-/*ÏÔÊ¾·Å´óºóµÄÊý×Ö*/
+/*ï¿½ï¿½Ê¾ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 void put_asc16_number_size(int x,int y,int xsize,int ysize,int n,unsigned int color )
 {
 	char *s=0;
@@ -265,7 +265,7 @@ void put_asc16_number_size(int x,int y,int xsize,int ysize,int n,unsigned int co
     }
 }
 
-/*ÏÔÊ¾·Å´óºóµÄÊý×Ö,lÎª¸²¸Ç³¤¶È*/
+/*ï¿½ï¿½Ê¾ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,lÎªï¿½ï¿½ï¿½Ç³ï¿½ï¿½ï¿½*/
 void put_asc16_number_size_coverd(int x,int y,int xsize,int ysize,int l,int n,unsigned int color )
 {
 	char *s=0;
@@ -281,19 +281,19 @@ void put_asc16_number_size_coverd(int x,int y,int xsize,int ysize,int l,int n,un
     }
 }
 
-/*x,y±íÊ¾ºº×ÖÊä³öÎ»ÖÃ£¬xsize,ysizeÎª·Å´ó±¶Êý£¬sÎªºº×Ö´®£¬color±íÊ¾ºº×ÖÑÕÉ«£¬name Îªºº×Ö¿âÎÄ¼þÂ·¾¶£¬¼´×ÖÌåÐÅÏ¢*/
+/*x,yï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½xsize,ysizeÎªï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½sÎªï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½colorï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½name Îªï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
 void prt_hz16_size(int x, int y, int xsize,int ysize,char *s, unsigned int color, char * name)  
 {
 	FILE * fp;
-	char buffer[32];                                          //ÓÃÀ´¶ÁÈ¡16ºº×ÖµÄ32Î»×ÖÄ£
+	char buffer[32];                                          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡16ï¿½ï¿½ï¿½Öµï¿½32Î»ï¿½ï¿½Ä£
 	int i=0;
 	int j=0;
 	int m=0;
 	int n=0;
-	unsigned char qh=0;          	//ÓÃÀ´¼ÆËãºº×ÖÎ»ºÅºÍÇøºÅ
+	unsigned char qh=0;          	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ãººï¿½ï¿½Î»ï¿½Åºï¿½ï¿½ï¿½ï¿½ï¿½
 	unsigned char wh=0;    
-	unsigned long offset=0;                                     //¼ÇÂ¼Î»ÒÆÁ¿
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³öÃ¿Ò»Î»µÄÐÅÏ¢
+	unsigned long offset=0;                                     //ï¿½ï¿½Â¼Î»ï¿½ï¿½ï¿½ï¿½
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
 	if((fp=fopen(name,"rb"))==NULL)
 	{
@@ -301,14 +301,14 @@ void prt_hz16_size(int x, int y, int xsize,int ysize,char *s, unsigned int color
 		getch();
 		exit(0);
 	}
-	while(*s!=0)                                         //Èôºº×Ö´®Î´¶ÁÍê£¬Ôò¼ÌÐø
+	while(*s!=0)                                         //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Î´ï¿½ï¿½ï¿½ê£¬ï¿½ï¿½ï¿½ï¿½ï¿½
     {
-		qh=* s-160;                                       //¼ÆËãÇøºÅºÍÎ»ºÅ
+		qh=* s-160;                                       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½Î»ï¿½ï¿½
         wh=*(s+1) -160;
-        offset=(94L*(qh-1)+(wh-1))*32;                     //¼ÆËãºº×ÖµÄµØÖ·Âë
-        fseek(fp,offset, 0);                        //ºº×Ö¿âÎÄ¼þÖÐ²éÕÒÄÚÂëÎ»ÖÃ
-        fread(buffer, 32, 1, fp);                          //¶ÁÈ¡ÏàÓ¦Î»ÖÃµÄ×ÖÄ£
-        for(i=0;i<16;i++)                                  //ÔÚÖ¸¶¨µãÊä³öÒ»¸öºº×Ö
+        offset=(94L*(qh-1)+(wh-1))*32;                     //ï¿½ï¿½ï¿½ãººï¿½ÖµÄµï¿½Ö·ï¿½ï¿½
+        fseek(fp,offset, 0);                        //ï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+        fread(buffer, 32, 1, fp);                          //ï¿½ï¿½È¡ï¿½ï¿½Ó¦Î»ï¿½Ãµï¿½ï¿½ï¿½Ä£
+        for(i=0;i<16;i++)                                  //ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			for(j=0;j<16;j++)
 			{
@@ -318,58 +318,58 @@ void prt_hz16_size(int x, int y, int xsize,int ysize,char *s, unsigned int color
 					{
 						for(n=0;n<ysize;n++)
 					    {
-							Putpixel64k(x+j*xsize+m,y+i*ysize+n,color);
+							putpixel(x+j*xsize+m,y+i*ysize+n,color);
         				}
 					}
 				}
 			}
 		}
-	    x+=16*xsize;                                          //ºáÏòÊä³ö£¬¼ä¾àÎª16*xsize
-		s+=2;                                           //¶ÁÈ¡ÏÂÒ»¸öºº×Ö
+	    x+=16*xsize;                                          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª16*xsize
+		s+=2;                                           //ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
     fclose(fp);
 }
 
-/*Êä³ö¼ÈÓÐ16*16ºº×ÖÓÖÓÐ16*16asc×Ö·ûµÄ×Ö·û´®º¯Êý£¬x,y±íÊ¾ºº×ÖÊä³öÎ»ÖÃ£¬xsize,ysizeÎª·Å´ó±¶Êý£¬sÎª»ìºÏ×Ö·û´®£¬
-color±íÊ¾×Ö·ûÑÕÉ«£¬name Îªºº×Ö¿âÎÄ¼þÂ·¾¶£¬¼´×ÖÌåÐÅÏ¢*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½16*16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½16*16ascï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½x,yï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½xsize,ysizeÎªï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½sÎªï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½
+colorï¿½ï¿½Ê¾ï¿½Ö·ï¿½ï¿½ï¿½É«ï¿½ï¿½name Îªï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
 void prt_hz16_asc16_size(int x, int y, int xsize,int ysize,char *s, unsigned int color, char * name)
 {
 	FILE * fp1=NULL;
 	FILE * fp2=NULL;
-	char buffer1[16]={0};                                          //ÓÃÀ´¶ÁÈ¡16ascll×Ö·ûµÄ16Î»×ÖÄ£
-	char buffer2[32]={0};                                          //ÓÃÀ´¶ÁÈ¡16ºº×ÖµÄ32Î»×ÖÄ£
+	char buffer1[16]={0};                                          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡16ascllï¿½Ö·ï¿½ï¿½ï¿½16Î»ï¿½ï¿½Ä£
+	char buffer2[32]={0};                                          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡16ï¿½ï¿½ï¿½Öµï¿½32Î»ï¿½ï¿½Ä£
 	int i=0;
 	int j=0;
 	int m=0;
-	int n=0;                                                             //Ñ­»·±äÁ¿
+	int n=0;                                                             //Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	unsigned char qh=0;
-    unsigned char wh=0;                                    //ÓÃÀ´¼ÆËãºº×ÖÇøÎ»ºÅ
-	unsigned long offset=0;                               //¼ÇÂ¼Î»ÒÆÁ¿
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³ö×ÖÄ£Ã¿Ò»Î»µÄÐÅÏ¢
+    unsigned char wh=0;                                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ãººï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	unsigned long offset=0;                               //ï¿½ï¿½Â¼Î»ï¿½ï¿½ï¿½ï¿½
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½ï¿½ï¿½Ä£Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
 	if ((fp1=fopen("hzk\\ASC16","rb"))==NULL)
 	{
-        CloseSVGA();
+        closegraph();
 		printf("asc16 wrong!");		
         getch();            
 		exit(1);
 	}
 	if((fp2=fopen(name,"rb"))==NULL)
 	{
-		CloseSVGA();
+		closegraph();
 		printf("Can't open hzk16!");
 		getch();
 		exit(0);
 	}
  
-	while(*s!=0)                                         //Èô»ìºÏ×Ö·û´®Î´¶ÁÍê£¬Ôò¼ÌÐø
+	while(*s!=0)                                         //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ê£¬ï¿½ï¿½ï¿½ï¿½ï¿½
     {
-        if((*s&0x80)==0)                               //Èô¸Ã×Ö·û×Ö½Ú×î¸ßÎ»Îª0£¬±íÃ÷¸Ã×Ö½ÚASCIIÂë£¬Êä³ö×Ö·û
+        if((*s&0x80)==0)                               //ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½Î»Îª0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ASCIIï¿½ë£¬ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
 		{
-			offset=*s * 16L;                         	//¼ÆËãÎ»ÒÆÁ¿
+			offset=*s * 16L;                         	//ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
 	        fseek(fp1,offset,0);
-	        fread(buffer1,16,1,fp1);                //¶Á³ö×ÖÄ£ÐÅÏ¢
-		    for(i=0;i<16;i++)                         //ÔÚÖ¸¶¨µãÊä³öÒ»¸ö·Å´óºóµÄ×Ö·û
+	        fread(buffer1,16,1,fp1);                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ï¢
+		    for(i=0;i<16;i++)                         //ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Å´ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
 			{
 				for(j=0;j<8;j++)
 				{
@@ -379,23 +379,23 @@ void prt_hz16_asc16_size(int x, int y, int xsize,int ysize,char *s, unsigned int
 						{
 							for(n=0;n<ysize;n++)
 						    {
-	                            Putpixel64k(x+j*xsize+m,y+2*ysize+i*ysize+n,color); //y+2*ysizeÊÇÎªÁËÆ½ºâºº×ÖÓëÓ¢ÎÄ×Ö·ûµÄ¸ß¶È
+	                            putpixel(x+j*xsize+m,y+2*ysize+i*ysize+n,color); //y+2*ysizeï¿½ï¿½Îªï¿½ï¿½Æ½ï¿½âººï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Ä¸ß¶ï¿½
 							}
 						}
 					}
 				}
 			}
-			x+=8*xsize;           //ºáÏòÊä³ö£¬¼ä¾àÎª8*xsize
-			s++;		                //¶ÁÈ¡ÏÂÒ»¸ö×Ö·û
+			x+=8*xsize;           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª8*xsize
+			s++;		                //ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½
 		}		
-		else if((*s&0x80)!=0)                                     //Èô¸Ã×Ö·û×Ö½Ú×î¸ßÎ»Îª1£¬±íÃ÷¸Ã×Ö½ÚÎªºº×ÖÄÚÂëÒ»²¿·Ö£¬Êä³öºº×Ö  
+		else if((*s&0x80)!=0)                                     //ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½Î»Îª1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 		{
-			qh=* s-160;                                       //¼ÆËãÇøºÅºÍÎ»ºÅ
+			qh=* s-160;                                       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½Î»ï¿½ï¿½
     	    wh=*(s+1) -160;
-     	    offset=(94L*(qh-1)+(wh-1))*32;  //¼ÆËãºº×ÖµÄµØÖ·Âë
-   	   	    fseek(fp2,offset, 0);                        //ºº×Ö¿âÎÄ¼þÖÐ²éÕÒÄÚÂëÎ»ÖÃ
-  	        fread(buffer2, 32, 1, fp2);                  //¶ÁÈ¡ÏàÓ¦Î»ÖÃµÄ×ÖÄ£
-  	        for(i=0;i<16;i++)                               //ÔÚÖ¸¶¨µãÊä³öÒ»¸ö·Å´óºóµÄºº×Ö
+     	    offset=(94L*(qh-1)+(wh-1))*32;  //ï¿½ï¿½ï¿½ãººï¿½ÖµÄµï¿½Ö·ï¿½ï¿½
+   	   	    fseek(fp2,offset, 0);                        //ï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+  	        fread(buffer2, 32, 1, fp2);                  //ï¿½ï¿½È¡ï¿½ï¿½Ó¦Î»ï¿½Ãµï¿½ï¿½ï¿½Ä£
+  	        for(i=0;i<16;i++)                               //ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Å´ï¿½ï¿½Äºï¿½ï¿½ï¿½
 			{
 				for(j=0;j<16;j++)
 				{
@@ -405,59 +405,59 @@ void prt_hz16_asc16_size(int x, int y, int xsize,int ysize,char *s, unsigned int
 						{
 							for(n=0;n<ysize;n++)
 						    {
-								Putpixel64k(x+j*xsize+m,y+i*ysize+n,color);
+								putpixel(x+j*xsize+m,y+i*ysize+n,color);
 							}
 						}
 					}					
 				}
 			}
-			x+=16*xsize;              //ºáÏòÊä³ö£¬¼ä¾àÎª16*xsize
-			s+=2;   			             //¶ÁÈ¡ÏÂÒ»¸ö×Ö·û
+			x+=16*xsize;              //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª16*xsize
+			s+=2;   			             //ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½
         }
 	}
     fclose(fp1);
 	fclose(fp2);
 }	
 
-/*Êä³ö¼ÈÓÐ24*24ºº×ÖÓÖÓÐ32*32 asc×Ö·ûµÄ×Ö·û´®º¯Êý£¬x,y±íÊ¾ºº×ÖÊä³öÎ»ÖÃ£¬sÎª»ìºÏ×Ö·û´®£¬
-color±íÊ¾×Ö·ûÑÕÉ«£¬name Îªºº×Ö¿âÎÄ¼þÂ·¾¶£¬¼´×ÖÌåÐÅÏ¢*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½24*24ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½32*32 ascï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½x,yï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½sÎªï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½
+colorï¿½ï¿½Ê¾ï¿½Ö·ï¿½ï¿½ï¿½É«ï¿½ï¿½name Îªï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
 void prt_hz24_asc32(int x, int y,char *s, unsigned int color, char * name)
 {
 	FILE * fp1=NULL;
 	FILE * fp2=NULL;
-	char buffer1[16]={0};                                          //ÓÃÀ´¶ÁÈ¡12ascll×Ö·ûµÄ12Î»×ÖÄ£
-	char buffer2[72]={0};                                          //ÓÃÀ´¶ÁÈ¡24ºº×ÖµÄ72Î»×ÖÄ£
+	char buffer1[16]={0};                                          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡12ascllï¿½Ö·ï¿½ï¿½ï¿½12Î»ï¿½ï¿½Ä£
+	char buffer2[72]={0};                                          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡24ï¿½ï¿½ï¿½Öµï¿½72Î»ï¿½ï¿½Ä£
 	int i=0;
 	int j=0;
 	int m=0;
-	int n=0;                                                             //Ñ­»·±äÁ¿
+	int n=0;                                                             //Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	unsigned char qh=0;
-    unsigned char wh=0;                                    //ÓÃÀ´¼ÆËãºº×ÖÇøÎ»ºÅ
-	unsigned long offset=0;                               //¼ÇÂ¼Î»ÒÆÁ¿
-	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ÓÃÀ´ÆÁ±Î³ö×ÖÄ£Ã¿Ò»Î»µÄÐÅÏ¢
+    unsigned char wh=0;                                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ãººï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	unsigned long offset=0;                               //ï¿½ï¿½Â¼Î»ï¿½ï¿½ï¿½ï¿½
+	unsigned char mask[]={0x80,0x40,0x20,0x10,0x08,0x04,       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ï¿½ï¿½ï¿½Ä£Ã¿Ò»Î»ï¿½ï¿½ï¿½ï¿½Ï¢
 						  0x02,0x01};
 	if ((fp1=fopen("hzk\\ASC16","rb"))==NULL)
 	{
-        CloseSVGA();
+        closegraph();
 		printf("asc16 wrong!");		
         getch();            
 		exit(1);
 	}
 	if((fp2=fopen(name,"rb"))==NULL)
 	{
-		CloseSVGA();
+		closegraph();
 		printf("Can't open hzk24!");
 		getch();
 		exit(0);
 	}
-	while(*s!=0)                                         //Èô»ìºÏ×Ö·û´®Î´¶ÁÍê£¬Ôò¼ÌÐø
+	while(*s!=0)                                         //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ê£¬ï¿½ï¿½ï¿½ï¿½ï¿½
     {
-        if((*s&0x80)==0)                               //Èô¸Ã×Ö·û×Ö½Ú×î¸ßÎ»Îª0£¬±íÃ÷¸Ã×Ö½ÚASCIIÂë£¬Êä³ö×Ö·û
+        if((*s&0x80)==0)                               //ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½Î»Îª0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ASCIIï¿½ë£¬ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
 		{
-			offset=*s * 16L;                         	//¼ÆËãÎ»ÒÆÁ¿
+			offset=*s * 16L;                         	//ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
 	        fseek(fp1,offset,0);
-	        fread(buffer1,16,1,fp1);                //¶Á³ö×ÖÄ£ÐÅÏ¢
-		    for(i=0;i<16;i++)                              //ÔÚÖ¸¶¨µãÊä³öÒ»¸ö32*32×Ö·û
+	        fread(buffer1,16,1,fp1);                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ï¢
+		    for(i=0;i<16;i++)                              //ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½32*32ï¿½Ö·ï¿½
 			{
 				for(j=0;j<8;j++)
 				{
@@ -467,47 +467,47 @@ void prt_hz24_asc32(int x, int y,char *s, unsigned int color, char * name)
 						{
 							for(n=0;n<2;n++)
 						    {
-	                            Putpixel64k(x+j*2+m,y-2+i*2+n,color); //y-2ÊÇÎªÁËÆ½ºâºº×ÖÓëÓ¢ÎÄ×Ö·ûµÄ¸ß¶È
+	                            putpixel(x+j*2+m,y-2+i*2+n,color); //y-2ï¿½ï¿½Îªï¿½ï¿½Æ½ï¿½âººï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Ä¸ß¶ï¿½
 							}
 						}
 					}
 				}
 			}
-			x+=8*2;           //ºáÏòÊä³ö£¬¼ä¾àÎª16
-			s++;		                //¶ÁÈ¡ÏÂÒ»¸ö×Ö·û
+			x+=8*2;           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª16
+			s++;		                //ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½
 		}		
-		else if((*s&0x80)!=0)                                     //Èô¸Ã×Ö·û×Ö½Ú×î¸ßÎ»Îª1£¬±íÃ÷¸Ã×Ö½ÚÎªºº×ÖÄÚÂëÒ»²¿·Ö£¬Êä³öºº×Ö  
+		else if((*s&0x80)!=0)                                     //ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½Î»Îª1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 		{
-			qh=* s-160;                                       //¼ÆËãÇøºÅºÍÎ»ºÅ
+			qh=* s-160;                                       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½Î»ï¿½ï¿½
     	    wh=*(s+1) -160;
-     	    offset=(94L*(qh-1)+(wh-1))*72;  //¼ÆËãºº×ÖµÄµØÖ·Âë
-   	   	    fseek(fp2,offset, 0);                        //ºº×Ö¿âÎÄ¼þÖÐ²éÕÒÄÚÂëÎ»ÖÃ
-  	        fread(buffer2, 72, 1, fp2);                  //¶ÁÈ¡ÏàÓ¦Î»ÖÃµÄ×ÖÄ£
-  	        for(i=0;i<24;i++)                               //ÔÚÖ¸¶¨µãÊä³öÒ»¸ö·Å´óºóµÄºº×Ö
+     	    offset=(94L*(qh-1)+(wh-1))*72;  //ï¿½ï¿½ï¿½ãººï¿½ÖµÄµï¿½Ö·ï¿½ï¿½
+   	   	    fseek(fp2,offset, 0);                        //ï¿½ï¿½ï¿½Ö¿ï¿½ï¿½Ä¼ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+  	        fread(buffer2, 72, 1, fp2);                  //ï¿½ï¿½È¡ï¿½ï¿½Ó¦Î»ï¿½Ãµï¿½ï¿½ï¿½Ä£
+  	        for(i=0;i<24;i++)                               //ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Å´ï¿½ï¿½Äºï¿½ï¿½ï¿½
 			{
 				for(j=0;j<24;j++)
 				{
 					if((mask[j%8] & buffer2[i*3+j/8])!=0)
 					{
-						Putpixel64k(x+j,y+i,color);
+						putpixel(x+j,y+i,color);
 					}					
 				}
 			}
-			x+=24;              //ºáÏòÊä³ö£¬¼ä¾àÎª24
-			s+=2;   			             //¶ÁÈ¡ÏÂÒ»¸ö×Ö·û
+			x+=24;              //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª24
+			s+=2;   			             //ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½
         }
 	}
     fclose(fp1);
 	fclose(fp2);
 }	
 	
-/*»­ÕûÊý±¶12*24ÈËÃñ±Ò·ûºÅ£¤º¯Êý*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½12*24ï¿½ï¿½ï¿½ï¿½Ò·ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½*/
 void RMB(int x,int y,int xsize,int ysize,unsigned color)
 {
 	int i=0;
 	int j=0;
 	int m=0;
-	int n=0;  //Ñ­»·±äÁ¿
+	int n=0;  //Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	int RMB[24][12]={
 	    {0,0,0,0,0,0,0,0,0,0,0,0},
 		{1,1,1,1,1,0,0,0,1,1,1,1},
@@ -530,7 +530,7 @@ void RMB(int x,int y,int xsize,int ysize,unsigned color)
 		{0,0,0,0,0,1,1,0,0,0,0,0},
 		{0,0,0,0,0,1,1,0,0,0,0,0},
 		{0,0,0,0,0,1,1,0,0,0,0,0},
-	    {0,0,0,1,1,1,1,1,1,0,0,0}}; //´¢´æÈËÃñ±ÒÍ¼±êµÄÊý×é
+	    {0,0,0,1,1,1,1,1,1,0,0,0}}; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		
 	for(i=0;i<24;i++)
 	{
@@ -541,7 +541,7 @@ void RMB(int x,int y,int xsize,int ysize,unsigned color)
 			    {
 				    for(n=0;n<ysize;n++)
 				    {
-					    Putpixel64k(x+j*xsize+m,y+i*ysize+n,color);
+					    putpixel(x+j*xsize+m,y+i*ysize+n,color);
 				    }
 			    } 
 		}

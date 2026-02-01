@@ -1,65 +1,22 @@
-#ifndef MOUSE_H
-#define MOUSE_H
+#ifndef _mouse_h_ 
+#define _mouse_h_
 
-/***Êó±ê½á¹¹***/
-typedef struct mouse                                                   
-{
-	int x;			//¹â±êºá×ø±ê
-	int y;			//¹â±ê×İ×ø±ê
-	int key;		//°´Å¥µÄ×´Ì¬£¬0,1Î»·Ö±ğ±íÊ¾×óÓÒ¼ü£¬¸ÃÎ»Îª1±íÊ¾°´ÏÂ£¬0±íÊ¾ËÉ¿ª
-}MOUSE;                  //Êó±ê½á¹¹
+// å‡½æ•°å£°æ˜
+int mouse_press(int x1, int y1, int x2, int y2); // æ£€æµ‹é¼ æ ‡æ˜¯å¦åœ¨æŒ‡å®šåŒºåŸŸå†…ç‚¹ï¿½?
+void mouse(int, int);                            // ç»˜åˆ¶é¼ æ ‡å…‰æ ‡
+void mouseinit(void);                            // åˆå§‹åŒ–é¼ ï¿½?
+void mread(int *nx, int *ny, int *nbuttons);     // è¯»å–é¼ æ ‡å½“å‰ä½ç½®å’ŒæŒ‰é’®çŠ¶ï¿½?
+void save_bk_mou(int x, int y);                  // ä¿å­˜é¼ æ ‡å½“å‰ä½ç½®çš„èƒŒï¿½?
+void clrmous(int x, int y);                      // æ¸…é™¤é¼ æ ‡å…‰æ ‡
+void clearEvents();                              // æ¸…é™¤é¼ æ ‡äº‹ä»¶é˜Ÿåˆ—
+void drawmous(int x, int y);                     // ç»˜åˆ¶é¼ æ ‡å…‰æ ‡
+void newmouse(int *nx, int *ny, int *nbuttons);  // æ›´æ–°é¼ æ ‡ä½ç½®å’ŒçŠ¶ï¿½?
 
-
- 
-/***Êó±ê³õÊ¼»¯***/
-void mouse_init(void);
-/***Êó±ê¸´Î»***/
-void MouseInit(void);
-/***Êó±ê·¶Î§***/
-void MouseRange(int x1, int y1, int x2, int y2);
-/***µÃµ½Êó±ê°´¼ü×´Ì¬(²»´«µİÊó±ê×ø±ê)***/
-int MouseBut(MOUSE * mouse);
-/***µÃµ½Êó±êÎ»ÖÃºÍ°´¼ü×´Ì¬***/
-int MouseGet(MOUSE *mouse);
-//int MouseMove(MOUSE *mouse);
-void MouseSpeed(int x, int y);
-
-void SetMouseSen(int x,int y);
-/***Òş²ØÊó±ê***/
-void mouse_off(MOUSE *mouse);
-/***ÖØĞÂÉèÖÃÊó±êÎ»ÖÃ***/
-void MouseSet(int x,int y);
-//void MouseSet1(int x,int y);
-/***64k»­Êó±ê***/
-void mouse_on(MOUSE mouse);
-/***64kÊó±êÏÔÊ¾***/
-void mouse_show(MOUSE *mouse);
-/***256»­Êó±ê***/
-//void mouse_on1(MOUSE mouse);
-/***256Êó±êÏÔÊ¾***/
-//void mouse_show1(MOUSE *mouse);
-/***ÅĞ¶ÏÊó±êÊÇ·ñÔÚÖ¸¶¨ÇøÓòÄÚ²¿***/
-int MouseIn(int x1, int y1, int x2, int y2);
-/***ÅĞ¶ÏÊó±êÔÚÄ³Ò»Î»ÖÃµÄ°´Ñ¹×´Ì¬***/
-int mouse_press(int x1, int y1, int x2, int y2);
-/***µÃµ½Ä³Ò»µãµÄÑÕÉ«Öµ***/
-unsigned int Getpixel64k(int x, int y);
-/***µÃµ½Ä³Ò»µãµÄÑÕÉ«Öµ***/
-//unsigned int Getpixel256(int x, int y);
-
-/***»­Êó±ê***/
-
-void draw_mouse(int mx,int my);
-
-void CurShow(void);
-
-void Cursor(int x,int y,int flag);
-
-void Curinit(void);
-
-void Curhide(void);
-
-void getmouse(int *button,int *x,int *y);
-
+// å…¨å±€å˜é‡å£°æ˜
+extern int MouseX;      // é¼ æ ‡å½“å‰Xåæ ‡
+extern int MouseY;      // é¼ æ ‡å½“å‰Yåæ ‡
+extern int MouseS;      // é¼ æ ‡çŠ¶æ€ï¼ˆæŒ‰é’®çŠ¶æ€ç­‰ï¿½?
+extern int press;       // é¼ æ ‡æŒ‰é”®çŠ¶æ€ï¼ˆæ˜¯å¦æŒ‰ä¸‹ï¿½?
+extern union REGS regs; // DOSä¸­æ–­å¯„å­˜å™¨ç»“ï¿½?
 
 #endif

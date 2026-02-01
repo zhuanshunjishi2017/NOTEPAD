@@ -1,131 +1,131 @@
 #include <allfunc.h>
-void clear_all_data() 
-    {
-    // 清空 userinfo.dat 文件
-    FILE *fp = fopen("userinfo.dat", "wb");
-    if (fp == NULL) {
-        perror("无法打开 userinfo.dat 文件");
-        exit(EXIT_FAILURE);
-    }
-    fclose(fp);
 
-    // 清空 data.dat 文件
-    fp = fopen("data.dat", "wb");
-    if (fp == NULL) {
-        perror("无法打开 data.dat 文件");
-        exit(EXIT_FAILURE);
-    }
-    fclose(fp);
 
-    printf("所有数据已清空。\n");
-}
-
-void main()
+void main(void)
 {      
-    int page=0;
-    int num=0;
+    // 初始化图形模式
+    int gd = VGA, gm = VGAHI;   // gd:图形驱动 gm:图形模式
+    int i,j;
+    int flag[MENU_LEN] = {0};//刷新标志位（状态锁）
+    int subflag[MENU_LEN] = {0};
+    int submenuflag[SUBMENU_LEN] = {0};
+
+    int dialogflag[5] = {0};//按钮位按钮位窗口位
+    int count_esc = 0;
+    int exit_state = 0;
+
+    extern MENU menulist[MENU_LEN];
+    extern MENU submenu[MENU_LEN][SUBMENU_LEN];
+    extern BUTTON confirm[2];
+    extern WINDOW exit_dialog;
     
-    FILE *fp=NULL;   
-    if((fp=fopen("data.dat","wb"))==NULL)
-    {
-        printf("error!\n");
-        exit(0);
-    }
-      //一次性写入整个结构体数组（写入记录数：这里写入2条，可根据实际记录数修改）
-   
-    fclose(fp);
+    extern int is_exit_dialog;
+    
 
-    SetSVGA64k();//启动SVGA画图界面
-    bar1(0,0,1400,1400,0xffffff);
-    mouse_init();
-    //初始化鼠标 
-	while(1)   
+    initgraph(&gd, &gm, "BGI"); // 初始化图形模式
+
+    cleardevice();
+
+    update_frame();
+    show_menu(BLUE);
+
+    clearEvents();
+    mouseinit();
+
+	while (1)
 	{
-	        mouse_show(&mouse);
-            switch (page)
+        newmouse(&MouseX, &MouseY, &MouseS); //更新鼠标
+        if (!is_exit_dialog)//没有对话框才更新菜单
+        {
+            if (kbhit() && getch() == 27) is_exit_dialog = count_esc = 1;//检测按下第一次exc
+            update_menu(menulist,submenu,flag,subflag,submenuflag);//更新菜单
+        }//kbhit()是检测有无按键按下，不然会一直等待输入
+        else
+        {
+            exit_state = update_exit_dialog(&exit_dialog,confirm,
+                                    subflag,dialogflag,&count_esc);
+            if (exit_state == 2) break;
+            if (exit_state == 1)
             {
-                case 0:
-                welcome(&page);
-                break;
-                case 1:
-                staff_login(&page);//draw_login_visiter_rigister(&page);
-                break;
-                case 2:
-                user_login(&page,&num);
-                break;
-                case 3:
-                draw_login_visiter_chepai(&page);
-                break;
-                case 4:
-                rigister_login(&page);//draw_login_admin(&page);
-                break;
-                case 5:
-                draw_map(&page);
-                break;
-                case 6:
-                watcher(&page);
-                break;
-
-                case 7:
-                handle(&page);
-                break;
-
-                case 8:
-                charge_deal(&page);
-                break;
-
-                case 10:
-                deal_window(&page);
-                break;
-
-                case 11:
-                rules(&page);
-                break;
-
-                case 12:
-                history(&page);
-                break;
-
-                case 13:
-                rules1(&page);
-                break;
-                
-                case 14:
-                second_deal_window(&page);
-                break;
-                
-                case 15:
-                search_history(&page);
-                break;
-
-                case 26:
-                user_function(&page);
-                break;
-
-                case 27:
-                fun_against(&page);
-                break;
-
-                case 28:
-                safe_learning(&page);
-                break;
-
-                case 29:
-                deal_warning(&page);
-                break;
-
-                case 30:
-                punish(&page);
-                break;
-
-                case 31:    
-                safe_learning_deal(&page);
-                break;
-
-                
-            }
+                is_exit_dialog = 0;
+                show_menu(BLUE);
+                update_frame();
+            } 
+        }
 	}
-	CloseSVGA();//关闭图形界面 
+	closegraph();//关闭图形界面 
 }
 
-    
+
+//刷新除去菜单栏以外的整个框架
+void update_frame(void)
+{
+    setbkcolor(LIGHTGRAY);
+    setfillstyle(SOLID_FILL,LIGHTGRAY);
+    bar(0,MENU_H+2,640,480);
+}
+
+//更新菜单的主函数
+void update_menu(MENU *menulist,MENU (*submenu)[SUBMENU_LEN],
+                    int *flag,int* subflag,int *submenuflag)
+{
+    //检测打开的菜单是否有鼠标扫过和点击
+    int i,j;
+    for (i = 0; i<MENU_LEN;i++)
+    {
+        if(subflag[i])
+            submenu_mouse(submenu[i],i,submenuflag);
+    }
+    //检测主菜单是否有鼠标扫过
+    for (i = 0;i <MENU_LEN;i++)
+    {
+        if (refresh_menu(menulist+i,i,flag+i))
+            break;
+    }
+    //检测主菜单是否被鼠标单击
+    for (i =0;i < MENU_LEN;i++)
+    {
+        if(refresh_submenu(submenu[i],i,subflag+i))
+        {
+            for (j = 0; j < MENU_LEN;j++)
+                if (subflag[j] && (j != i))
+                    subflag[j] = 0;
+            break;
+        }
+    }
+}
+
+//更新退出提醒窗口
+int update_exit_dialog(WINDOW *dialog,BUTTON *button,int *menu,int *flag,int *count)
+{
+    extern DRAGPOS position;
+    DRAGPOS temp;
+    int i,state;
+    //预处理，强制关闭菜单
+    if (!*(flag+2)) for (i = 0;i< MENU_LEN;i++) if (menu[i]) menu[i] = 0,update_frame();
+    //渲染窗口
+    state = show_exit_dialog(dialog,button,flag);
+    //处理鼠标拖动
+    if ((MouseS == 1 && *(flag+3)== 1))
+    {
+        temp = draw_win_frame(dialog,&position,MouseX,MouseY,
+                    position.target_x,position.target_y,flag+4);
+        position.target_x = temp.target_x;
+        position.target_y = temp.target_y;
+        delay(10);
+    }
+    if (!MouseS && *(flag+3)== 1)
+    {
+        dialog->x = MouseX + position.relative_x;
+        dialog->y = MouseY + position.relative_y;
+        position.target_x = MouseX;
+        position.target_y = MouseY;
+        update_frame();
+        *(flag+2) = *(flag+3)= *(flag+4) = 0;//第一次打开窗口，第一次标题栏按下鼠标，第一次拖动
+    }
+    if (!kbhit()) *count = 2;
+    //处理返回值
+    if (state == 1) return 1;
+    if (state == 2 || ((kbhit() && getch() == 27) && *count == 2)) return 2;
+    return 0;
+}

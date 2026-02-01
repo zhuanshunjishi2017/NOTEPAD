@@ -13,7 +13,7 @@ void putasc(int x, int y, char *s, int flag, int part, int color)
     asc_p = fopen("HZK\\ASC16", "rb");
     if (asc_p == NULL)
     {
-        CloseSVGA();
+        closegraph();
         printf("cant open ASC16");
         getch();
         exit(1);
@@ -35,7 +35,7 @@ void putasc(int x, int y, char *s, int flag, int part, int color)
                 {
                     if ((mask[j % 8] & mat[pos + j / 8]) != 0) // 修正NULL比较为0
                     {
-                        Putpixel64k(x + j, y, color);
+                        putpixel(x + j, y, color);
                     }
                 }
                 y++;
@@ -70,7 +70,7 @@ void puthz(int x, int y,char *s,int flag,int part,int color)
 					 hzk_p = fopen("HZK\\HZ16","rb");            //使用相对路径
 					 if(hzk_p==NULL)
 					 {
-						CloseSVGA();
+						closegraph();
 						printf("cant open HZ16");
 						 getch();
 						 exit(1);
@@ -94,7 +94,7 @@ void puthz(int x, int y,char *s,int flag,int part,int color)
 								{
 									if((mask[j%8]&mat[pos+j/8])!=NULL)   //j%8只能在0—8之间循环，j/8在0，1之间循环
 									{
-										Putpixel64k(x+j,y,color);
+										putpixel(x+j,y,color);
 
 									}
 
@@ -126,7 +126,7 @@ void puthz(int x, int y,char *s,int flag,int part,int color)
 					hzk_p = fopen("HZK\\Hzk24k","rb");
 					if (hzk_p==NULL)
 					{
-						CloseSVGA();
+						closegraph();
 						printf("cant open HZ24");
 						getch();
 						exit(1);
@@ -148,7 +148,7 @@ void puthz(int x, int y,char *s,int flag,int part,int color)
 								for (j=0;j<24;j++)   // 每一行有24位
 								{
 									if ((mask[j%8]&mat[pos+j/8])!=NULL)
-										Putpixel64k(x+j,y,color);
+										putpixel(x+j,y,color);
 
 								}
 								y++;
@@ -170,7 +170,7 @@ void puthz(int x, int y,char *s,int flag,int part,int color)
 					 hzk_p = fopen("HZK\\HZK32S","rb");
 					 if(hzk_p==NULL)
 					 {
-						CloseSVGA();
+						closegraph();
 						printf("cant open HZ32");
 						 getch();
 						 exit(1);
@@ -193,7 +193,7 @@ void puthz(int x, int y,char *s,int flag,int part,int color)
 								{
 									if((mask[j%8]&mat[pos+j/8])!=NULL)
 									{
-										Putpixel64k(x+j,y,color);
+										putpixel(x+j,y,color);
 
 									}
 
@@ -222,7 +222,7 @@ void puthz(int x, int y,char *s,int flag,int part,int color)
 					 hzk_p = fopen("HZK\\Hzk48k","rb");
 					 if(hzk_p==NULL)
 					 {
-						CloseSVGA();
+						closegraph();
 						printf("cant open HZ48");
 						 getch();
 						 exit(1);
@@ -246,7 +246,7 @@ void puthz(int x, int y,char *s,int flag,int part,int color)
 								{
 									if((mask[j%8]&mat[pos+j/8])!=NULL)   //j%8只能在0—8之间循环，j/8在0，1之间循环
 									{
-										Putpixel64k(x+j,y,color);
+										putpixel(x+j,y,color);
 
 									}
 

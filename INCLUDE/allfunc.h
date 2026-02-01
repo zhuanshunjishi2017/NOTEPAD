@@ -13,21 +13,11 @@
 
 #include"hz.h"
 #include"ghz.h"
-#include"lgfunc.h"
-#include"login.h"
-#include"map.h"
 #include"mouse.h"
 #include"SVGA.h"
-#include"mcdraw.h"
-#include"adraw.h"
-#include"lgfunc.h"
-#include"userfunc.h"
-#include"licence.h"
-#include"data.h"
-#include"database.h"
-#include"welcome.h"
 #include "BMP.h"
-#include"func1.h"
+#include "menu.h"
+#include "gui.h"
 
 #define NUM0 0x5230
 #define NUM1 0x4f31
@@ -66,7 +56,11 @@
 #define EIGHT 0x0938
 #define NINE 0x0a39
 #define ZERO 0x0b30
-extern MOUSE mouse;//声明全局变量，本项目工程共用同一个鼠标结构
-//故每个（需要鼠标的）文件都应包含
+
+void update_frame(void);
+
+void update_menu(MENU*,MENU (*)[SUBMENU_LEN],int*,int*,int*);
+
+int update_exit_dialog(WINDOW *,BUTTON *,int *,int *,int *);
 
 #endif
