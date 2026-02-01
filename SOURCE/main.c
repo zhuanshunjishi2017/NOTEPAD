@@ -108,11 +108,12 @@ int update_exit_dialog(WINDOW *dialog,BUTTON *button,int *menu,int *flag,int *co
     //处理鼠标拖动
     if ((MouseS == 1 && *(flag+3)== 1))
     {
+        clrmous(MouseX, MouseY);
         temp = draw_win_frame(dialog,&position,MouseX,MouseY,
                     position.target_x,position.target_y,flag+4);
         position.target_x = temp.target_x;
         position.target_y = temp.target_y;
-        delay(10);
+
     }
     if (!MouseS && *(flag+3)== 1)
     {

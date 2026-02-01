@@ -171,6 +171,7 @@ void draw_window(WINDOW *win,int state)
         setfillstyle(SOLID_FILL,BLUE);
         bar(x,y,xend,y+SUBMENU_H);
         //关闭按钮
+        /* 
         setfillstyle(SOLID_FILL,LIGHTGRAY);
         bar(x+1,y+1,x+SUBMENU_H-1,y+SUBMENU_H-1);
         setcolor(DARKGRAY);
@@ -183,7 +184,7 @@ void draw_window(WINDOW *win,int state)
 
         setfillstyle(SOLID_FILL,DARKGRAY);
         bar(x+SUBMENU_H/2-7,y+SUBMENU_H/2-1,x+SUBMENU_H/2+7,y+SUBMENU_H/2+1);
-
+        */
         //绘制汉字
         prt_hz16(xstart,y+6,win->title,WHITE,"HZK\\HZK16");
 
@@ -309,11 +310,12 @@ DRAGPOS draw_win_frame(WINDOW *win,DRAGPOS *pos,int x,int y,int xf,int yf,int *f
     int i,j;
     DRAGPOS result;
     
-    x += pos->relative_x;
-    y += pos->relative_y;//从鼠标到窗口边缘
+    x  += pos->relative_x;
+    y  += pos->relative_y;//从鼠标到窗口边缘
     xf += pos->relative_x;
-    yf += pos->relative_y;//旧的坐标
-    xend = x + w; yend = y + h;
+    yf += pos->relative_y;//旧的坐标鼠标到窗口边缘
+    xend = (x+w+4<640-1)?x+w:640-4-1;
+    yend = (y+h+4<480-1)?y+h:480-4-1;//超过这个范围好像会溢出？
 
     if (x<4) x = 4;
     if (y<4) y = 4;
@@ -321,26 +323,28 @@ DRAGPOS draw_win_frame(WINDOW *win,DRAGPOS *pos,int x,int y,int xf,int yf,int *f
     if (!*flag) 
     {
         free(winbuffer);
-        clrmous(MouseX, MouseY);
+        //clrmous(MouseX, MouseY);
         save_bk_win(win,x,y);
         *flag = 1;//第一次先储存
         putimage(xf-4, yf-4, winbuffer, COPY_PUT);
+        line(640,0,640,480);
     }
-    if (!(y == yf && x == xf))
-    {
 
+
+    if (!(y == yf && x == xf))//出现移动
+    {
+        
         if (winbuffer != NULL)
         {
             //将上次储存的照片放回原位
             putimage(xf-4, yf-4, winbuffer, COPY_PUT); 
             //释放内存
-            //putimage(10, 10, winbuffer, COPY_PUT); 
             free(winbuffer);
         }
-       
-        clrmous(MouseX, MouseY);
+        
         //在绘制边框前先储存会被边框遮住的照片
         save_bk_win(win,x,y);
+        
 
         rectangle(x-4,y-4,xend+4,yend+4);
         rectangle(x-3,y-3,xend+3,yend+3);
@@ -354,8 +358,8 @@ void save_bk_win(WINDOW *win,int x, int y)
 {
     int size; // 背景图像大小
     int w = win->width,h = win->height;
-    int xend = (x+w+4<640)?x+w:640-4;
-    int yend = (y+h+4<480)?y+h:480-4;
+    int xend = (x+w+4<640-1)?x+w:640-4-1;
+    int yend = (y+h+4<480-1)?y+h:480-4-1;
     // 计算鼠标光标区域的大小
     size = imagesize(x-4,y-4,xend+4,yend+4);
     // 分配内存用于保存背景
