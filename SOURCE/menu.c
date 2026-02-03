@@ -3,12 +3,12 @@
 #include "gui.h"
 
 
-MENU menulist[MENU_LEN] = {{"文件","(F)"},
+MENU main_menu[MENU_LEN] = {{"文件","(F)"},
                     {"编辑","(E)"},
                     {"查看","(V)"},
                     {"帮助","(H)"}};
 
-MENU submenu[MENU_LEN][SUBMENU_LEN] = {{{"新建","(N)"},
+MENU sub_menu[MENU_LEN][SUBMENU_LEN] = {{{"新建","(N)"},
                     {"打开","(O)",&start_open_dialog},
                     {"保存","(S)"},
                     {"另存为","(A)"},
@@ -32,6 +32,8 @@ MENU submenu[MENU_LEN][SUBMENU_LEN] = {{{"新建","(N)"},
                     {"关于记事本","(A)"},
                     {"<endline>","\0"}}};
 
+int is_menu_open[MENU_LEN] = {0};
+
 
 void start_exit_dialog(void)
 {
@@ -45,7 +47,7 @@ void start_open_dialog(void)
     dialog_state = DIALOG_OPEN;
 }
 
-void create_menu(MENU *m,int x,int fg,int bg)
+void create_menu_item(MENU *m,int x,int fg,int bg)
 {
     setfillstyle(SOLID_FILL,bg);
     bar(x,0,x+MENU_W,MENU_H);
@@ -54,7 +56,7 @@ void create_menu(MENU *m,int x,int fg,int bg)
     outtextxy(x+44, 3, m->en);
 }
 
-void create_submenu(MENU *sub,int x,int y,int fg,int bg)
+void create_submenu_item(MENU *sub,int x,int y,int fg,int bg)
 {
     //填充背景
     setfillstyle(SOLID_FILL,bg);
@@ -76,7 +78,7 @@ void create_submenu(MENU *sub,int x,int y,int fg,int bg)
 
 }
 
-void show_submenu(MENU *subm,int x)//x为绝对横坐标
+void create_submenu(MENU *subm,int x)//x为绝对横坐标
 {
     int y = MENU_H+1;
     while (1)
@@ -100,14 +102,14 @@ void show_submenu(MENU *subm,int x)//x为绝对横坐标
         }
         else
         {
-            create_submenu(subm,x,y,BLUE,WHITE);
+            create_submenu_item(subm,x,y,BLUE,WHITE);
             y += SUBMENU_H;
         }
         subm++;
     }
 }
 //用于根据鼠标状态改变子菜单形态
-int submenu_mouse(MENU *subm,int x,int *flag)//x为第几个菜单
+int refresh_submenu(MENU *subm,int x)//x为第几个菜单
 {
     int y = MENU_H+1;
     int state;
@@ -124,25 +126,24 @@ int submenu_mouse(MENU *subm,int x,int *flag)//x为第几个菜单
                 return 1;
             }
             //没有按下只是悬停
-            if (state&&*flag)
+            else if (state&&!subm->is_highlight)
             {
                 clrmous(MouseX, MouseY);
-                create_submenu(subm,8+x*MENU_W,y,WHITE,BLUE);
-                *flag = 0;
+                create_submenu_item(subm,8+x*MENU_W,y,WHITE,BLUE);
+                subm->is_highlight = 1;
                 return 1;
             }
             //从悬停状态离开
-            else if (!state&&!*flag)
+            else if (!state&&subm->is_highlight)
             {
                 clrmous(MouseX, MouseY);
-                create_submenu(subm,8+x*MENU_W,y,BLUE,WHITE);
-                *flag = 1;
+                create_submenu_item(subm,8+x*MENU_W,y,BLUE,WHITE);
+                subm->is_highlight = 0;
                 return 1;
             }
             y += SUBMENU_H;
         }
         subm++;
-        flag++;
     }
     return 0;
 }
@@ -159,41 +160,41 @@ void show_menu(int color)
     bar(0,0,640,MENU_H);
     
     for (i = 0;i < 4;i++)
-        create_menu(menulist+i,8+i*MENU_W,color,WHITE);
+        create_menu_item(main_menu+i,8+i*MENU_W,color,WHITE);
 
     setcolor(DARKGRAY);
     line(0,MENU_H+1,640,MENU_H+1);//画分割线
 
 }
 
-int refresh_menu(MENU *m,int x,int *flag)
+int refresh_menu(MENU *m,int x)
 {
-    if (mouse_press(8+x*MENU_W,0,8+(x+1)*MENU_W,36)&&*flag)
+    if (mouse_press(8+x*MENU_W,0,8+(x+1)*MENU_W,36)&&!m->is_highlight)
     {
         clrmous(MouseX, MouseY);
-        create_menu(m,8+x*MENU_W,WHITE,BLUE);
-        *flag = 0;
+        create_menu_item(m,8+x*MENU_W,WHITE,BLUE);
+        m->is_highlight = 1;
         return 1;
     }
-    else if (!mouse_press(8+x*MENU_W,0,8+(x+1)*MENU_W,36)&&!*flag)
+    else if (!mouse_press(8+x*MENU_W,0,8+(x+1)*MENU_W,36)&&m->is_highlight)
     {
         clrmous(MouseX, MouseY);
-        create_menu(m,8+x*MENU_W,BLUE,WHITE);
-        *flag = 1;
+        create_menu_item(m,8+x*MENU_W,BLUE,WHITE);
+        m->is_highlight = 0;
         return 1;
     }
     return 0;
 }
 
 
-int refresh_submenu(MENU *m,int x,int *flag)
+int show_submenu(MENU *m,int x,int *flag)
 {
     //鼠标按下
     if ((mouse_press(8+x*MENU_W,0,8+(x+1)*MENU_W,36)==1)&&!*flag)
     {
         clrmous(MouseX, MouseY);
         update_frame();
-        show_submenu(m,8+x*MENU_W);
+        create_submenu(m,8+x*MENU_W);
         *flag = 1;
         return 1;
     }

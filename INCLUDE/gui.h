@@ -24,6 +24,9 @@ typedef struct
     int width;
     int height;
     void (*func)();
+
+    int is_highlight;
+
 } BUTTON;
 
 typedef struct
@@ -33,6 +36,14 @@ typedef struct
     int height;
     int x;
     int y;
+
+    int relative_x;
+    int relative_y;
+
+    int is_open;
+    int is_title_click;
+    int is_drag;
+
 } WINDOW;
 
 typedef struct
@@ -40,15 +51,19 @@ typedef struct
     int width;
     int height;
     char content[128];
+
+    int is_show;
+    int is_focus;
+    int is_highlight;
+    int count_twinkle;
+
 } ENTRY;
 
 typedef struct 
 {
-    int relative_x;
-    int relative_y;
     int target_x;
     int target_y;
-} DRAGPOS;
+} POSITION;
 
 extern BUTTON confirm[2];
 extern WINDOW exit_dialog;
@@ -56,7 +71,7 @@ extern WINDOW open_dialog;
 
 extern ENTRY entries[2];
 
-extern DRAGPOS dialog_pos;
+extern POSITION dialog_pos;
 
 extern int dialog_state;
 
@@ -65,15 +80,17 @@ void draw_button(BUTTON *bu,int x,int y,int state);
 void draw_window(WINDOW *win,int state);
 void draw_entry(ENTRY *en,int x,int y,int state);
 
-void show_entry(ENTRY *en,int x,int y,int *flag);
-int show_button(BUTTON *button,int x,int y,int *flag);
+void show_entry(ENTRY *en,int x,int y);
+int show_button(BUTTON *button,int x,int y);
 
+void init_entry(ENTRY *en);
 
-int show_open_dialog(WINDOW *win,ENTRY *entry,BUTTON *button,int *flag);
-int show_exit_dialog(WINDOW *dialog,BUTTON *button,int *flag);
+int show_open_dialog(WINDOW *win,ENTRY *entry,BUTTON *button);
+int show_exit_dialog(WINDOW *dialog,BUTTON *button);
 
+void tackle_drag_window(WINDOW *win,POSITION *pos);
 
-DRAGPOS draw_win_frame(WINDOW *win,DRAGPOS *pos,int x,int y,int ,int,int *);
+POSITION draw_win_frame(WINDOW *,POSITION *);
 
 void save_bk_win(WINDOW *win,int x, int y);
 

@@ -14,7 +14,7 @@ BUTTON confirm[2] = {{"确定",BUTTON_W,BUTTON_H,NULL},
 
 ENTRY entries[2] = {{ENTRY_W,ENTRY_H},{ENTRY_W,ENTRY_H}};
 
-DRAGPOS dialog_pos = {0};
+POSITION dialog_pos = {0};
 
 int dialog_state  = 0;//用于标定有无对话框打开
 void *winbuffer = NULL;//窗口移动时储存图像
@@ -234,31 +234,30 @@ void draw_entry(ENTRY *en,int x,int y,int state)
 
 }
 //第一次出现 第一次按下 第一次悬停 闪烁计数
-void show_entry(ENTRY *en,int x,int y,int *flag)
+void show_entry(ENTRY *en,int x,int y)
 {
-    int state1 = mouse_press(x,y,x+ENTRY_W,y+ENTRY_H);
-
+    int press_state = mouse_press(x,y,x+ENTRY_W,y+ENTRY_H);
     char input[2] = {0};
     int twinkle_pos = strlen(en->content)*10;
     int content_len;
         
-    if (flag[1])//如果处于焦点状态
+    if (en->is_focus)//如果处于焦点状态
     {
         //处理光标闪烁
-        flag[3]++;
-        if (flag[3] == 6000)
+        en->count_twinkle++;
+        if (en->count_twinkle == 50)
         {
             setfillstyle(SOLID_FILL,BLUE);
             bar(x+6+twinkle_pos,y+8,x+6+twinkle_pos+1,y+25);
         }
 
-        if (flag[3] == 12000)
+        if (en->count_twinkle == 100)
         {
-            flag[3] = 0;
+            en->count_twinkle = 0;
             setfillstyle(SOLID_FILL,WHITE);
             bar(x+6+twinkle_pos,y+8,x+6+twinkle_pos+1,y+25);
         } 
-
+        delay(10);
         //处理输入
         if (kbhit())
         {
@@ -266,7 +265,11 @@ void show_entry(ENTRY *en,int x,int y,int *flag)
             if (*input == 13 || *input == 27)//回车或esc
             {
                 draw_entry(en,x,y,0);
-                flag[1] = flag[2] = flag[3] = 0;
+
+                en->is_focus = 0;
+                en->is_highlight = 0;
+                en->count_twinkle = 0;
+
                 MouseForm = 0;
                 return;
             }
@@ -288,64 +291,68 @@ void show_entry(ENTRY *en,int x,int y,int *flag)
 
     }
     //首次出现
-    if (!flag[0])
+    if (!en->is_show)
     {
         draw_entry(en,x,y,0);
-        flag[0] = 1;
+        en->is_show = 1;
         return;
     }
 
     //按下与释放
-    if (state1 == 1 && !flag[1])
+    if (press_state == 1 && !en->is_focus)
     {
         draw_entry(en,x,y,1);
-        flag[1] = 1;
+        en->is_focus = 1;
         return;
     }
-    if (state1 == 0 && flag[1] && MouseS)
+    else if (press_state == 0 && en->is_focus && MouseS)
     {
         draw_entry(en,x,y,0);
-        flag[1] = 0;
+        en->is_focus = 0;
         return;
-    }
+    }//在别处点击
     
-    if (state1 == 2 && !flag[2])
+    if (press_state == 2 && !en->is_highlight)//悬停
     {
-        if(!flag[1]) draw_entry(en,x,y,2);
-        flag[2] = 1;
+        if(!en->is_focus) draw_entry(en,x,y,2);//非焦点
+        en->is_highlight = 1;
         MouseForm = 2;
         return;
     }
-    if (state1 == 0 && flag[2])
+    if (press_state == 0 && en->is_highlight)
     {
-        if(!flag[1]) draw_entry(en,x,y,0);
-        flag[2] = flag[3] = 0;
+        if(!en->is_focus) draw_entry(en,x,y,0);//只有处于非输入状态才变灰
+        en->is_highlight = 0;
+
         MouseForm = 0;
         return;
-    }//只有处于非输入状态才变灰
-
+    }
 
 }
 
-int show_button(BUTTON *button,int x,int y,int *flag)
+//处理按钮状态
+int show_button(BUTTON *button,int x,int y)
 {
-    int state1 = mouse_press(x,y,x+BUTTON_W,y+BUTTON_H);
-    //处理确定按钮状态
-    if ((state1==2)&&!*flag)
+    int press_state = mouse_press(x,y,x+BUTTON_W,y+BUTTON_H);
+    //鼠标悬停
+    if ((press_state==2) && !button->is_highlight)
     {
         draw_button(button,x,y,2);
-        *flag = 1;
+        button->is_highlight = 1;
         return 0;
     }
-    else if (!state1&&*flag)
+    //鼠标离开
+    else if (!press_state && button->is_highlight)
     {
         draw_button(button,x,y,0);
-        *flag = 0;
+        button->is_highlight = 0;
         return 0;
     }
-    else if (state1==1)
+    //鼠标按下
+    else if (press_state==1)
     {
         draw_button(button,x,y,1);
+        button->is_highlight = 0;
         delay(100);
         return 1;
     }
@@ -353,44 +360,39 @@ int show_button(BUTTON *button,int x,int y,int *flag)
 }
 
 //这个函数需要3个flag
-int show_exit_dialog(WINDOW *dialog,BUTTON *button,int *flag)
+int show_exit_dialog(WINDOW *dialog,BUTTON *button)
 {
     int x = dialog->x, y = dialog->y;
-
-    int dragaera = mouse_press(x,y,x+SMALL_DIALOG_W,y+SUBMENU_H);
-    char *text = "确实要退出“记事本”吗？";
+    int i;
 
     //初始化首次绘制
-    if (!*(flag+2))
+    if (!dialog->is_open)
     {
+        for (i = 0;i< MENU_LEN;is_menu_open[i++] = 0);
+        update_frame();
         show_menu(LIGHTGRAY);
 
         draw_window(dialog,1);
-        prt_hz16(x+55,y+60,text,BLUE,"HZK\\HZK16");
+        prt_hz16(x+55,y+60,"确实要退出“记事本”吗？",BLUE,"HZK\\HZK16");
         draw_button(button,x+70,y+100,0);
         draw_button(button+1,x+160,y+100,0);
 
 
-        *(flag+2) = 1;
+        dialog->is_open = 1;
         return 0;
     }
     //处理拖动事件
-    if (dragaera == 1 && !*(flag+3))
-    {
-        *(flag+3) = 1;//拖动标志位
-        dialog_pos.relative_x = x - MouseX;
-        dialog_pos.relative_y = y - MouseY;
-        dialog_pos.target_x = MouseX;
-        dialog_pos.target_y = MouseY;
-    }
-    //处理按钮
-    if (!*(flag+3))
-    {
-        if(show_button(button,x+70,y+100,flag)) return 2;//确定要退出程序，直接返回
+    tackle_drag_window(dialog,&dialog_pos);
 
-        if(show_button(button+1,x+160,y+100,flag+1))
+    //处理按钮
+    if (!dialog->is_title_click)
+    {
+        if(show_button(button,x+70,y+100)) return 2;//确定要退出程序，直接返回
+
+        if(show_button(button+1,x+160,y+100) || (kbhit() && getch() == 27))
         {
-            *(flag+3) = *(flag+2)= *(flag+1)= *flag = 0;//归位
+            dialog->is_open = 0;
+
             dialog->x = SMALL_DIALOG_X;
             dialog->y = SMALL_DIALOG_Y;
             return 1;
@@ -399,70 +401,75 @@ int show_exit_dialog(WINDOW *dialog,BUTTON *button,int *flag)
     return 0;
 }
 
+void init_entry(ENTRY *en)
+{
+    en->is_show = 0;
+    en->is_focus = 0;
+    en->is_highlight = 0;
+    en->count_twinkle = 0;
+}
+
 //显示打开文件的窗口
-int show_open_dialog(WINDOW *dialog,ENTRY *entry,BUTTON *button,int *flag)
+int show_open_dialog(WINDOW *dialog,ENTRY *entry,BUTTON *button)
 {
     int x = dialog->x, y = dialog->y;
     int i;
     char dir[64];
 
-    int dragaera = mouse_press(x,y,x+dialog->width,y+SUBMENU_H);
-
-    //初始化首次绘制
-    if (!*(flag+2))
+    //初始化
+    if (!dialog->is_open)
     {
+        for (i = 0;i< MENU_LEN;is_menu_open[i++] = 0);
+        update_frame();
         show_menu(LIGHTGRAY);
-
-        for (i=0;i<16;i++) if (flag[i]) flag[i] = 0;
 
         draw_window(dialog,1);
 
-        
         prt_hz16(x+15,y+40,"当前路径：",BLUE,"HZK\\HZK16");
-
         setcolor(BLUE);
         getdir(dir);
         outtextxy(x+15, y+65, dir);
-
         prt_hz16(x+15,y+98,"在此处键入文件名称以打开",BLUE,"HZK\\HZK16");
 
+        init_entry(entry);
         draw_entry(entry,x+12,y+130,0);
 
         
         draw_button(button,x+243,y+40,0);
         draw_button(button+1,x+243,y+85,0);
 
-        *(flag+2) = 1;
+        dialog->is_open = 1;
         return 0;
     }
+
     //处理拖动事件
-    if (dragaera == 1 && !*(flag+3))
+    tackle_drag_window(dialog,&dialog_pos);
+
+    //处理按钮
+    if (!dialog->is_title_click)
     {
-        *(flag+3) = 1;
-        dialog_pos.relative_x = x - MouseX;
-        dialog_pos.relative_y = y - MouseY;
-        dialog_pos.target_x = MouseX;
-        dialog_pos.target_y = MouseY;
-    }
-    if (!*(flag+3))
-    {
-        show_entry(entry,x+12,y+130,flag+5);//前五个已被占用,一个输入框需要五个
+        show_entry(entry,x+12,y+130);//前五个已被占用,一个输入框需要五个
         
-        if(show_button(button,x+243,y+40,flag)) 
+        if(show_button(button,x+243,y+40)) 
         {   
             dialog->x = MID_DIALOG_X;
             dialog->y = MID_DIALOG_Y;
-            for (i=0;i<16;i++) if (flag[i]) flag[i] = 0;
+            dialog->is_open = 0;
+            MouseForm = 0;
+
             return 2;//确定要退出程序，直接返回
         }
-        if(show_button(button+1,x+243,y+85,flag+1))
+        if(show_button(button+1,x+243,y+85) || (kbhit() && getch() == 27))
         {
             
             dialog->x = MID_DIALOG_X;
             dialog->y = MID_DIALOG_Y;
-            for (i=0;i<16;i++) if (flag[i]) flag[i] = 0;
+            dialog->is_open = 0;
+            MouseForm = 0;
+
             return 1;
         }
+
     }
     return 0; 
 }
@@ -476,35 +483,84 @@ void getdir(char *str)
     strcat(str,":\\");
     getcurdir(current_drive + 1, str+3);
 }
+
+//处理窗口拖动
+void tackle_drag_window(WINDOW *win,POSITION *pos)
+{
+    POSITION temp;
+    int title_state = mouse_press(win->x, win->y,
+                        win->x + win->width, win->y+SUBMENU_H);
+    //拖动初始化
+    if (title_state == 1 && !win->is_title_click)
+    {
+        win->is_title_click = 1;//拖动标志位
+
+        win->relative_x = win->x - MouseX;
+        win->relative_y = win->y - MouseY;
+
+        pos->target_x = MouseX;
+        pos->target_y = MouseY;
+    }
+    //拖动中
+    if ((MouseS == 1 && win->is_title_click == 1))
+    {
+        clrmous(MouseX, MouseY);
+        //画边框
+        temp = draw_win_frame(win,pos);
+        pos->target_x = temp.target_x;//pos里存储的始终比鼠标慢一帧
+        pos->target_y = temp.target_y;
+
+    }
+    //拖动完释放鼠标
+    if (!MouseS && win->is_title_click)
+    {
+        //更新窗口的位置
+        win->x = MouseX + win->relative_x;
+        win->y = MouseY + win->relative_y;//这里只用更新位置不用渲染
+
+        pos->target_x = MouseX;
+        pos->target_y = MouseY;
+        update_frame();
+        
+        win->is_open = 0;
+        win->is_title_click = 0;
+        win->is_drag = 0;
+        //第一个：迫使窗口重新渲染
+    }
+}
+
 //绘制拖动窗口的框架
-DRAGPOS draw_win_frame(WINDOW *win,DRAGPOS *pos,int x,int y,int xf,int yf,int *flag)
+POSITION draw_win_frame(WINDOW *win,POSITION *former)
 {
     
     int w = win->width,h = win->height;
     int xend ,yend;
     int i,j;
-    DRAGPOS result;
+    int x = MouseX, y = MouseY;
+    int xf = former->target_x, yf = former->target_y;
+    POSITION result;
     
-    x  += pos->relative_x;
-    y  += pos->relative_y;//从鼠标到窗口边缘
-    xf += pos->relative_x;
-    yf += pos->relative_y;//旧的坐标鼠标到窗口边缘
+    x  += win->relative_x;
+    y  += win->relative_y;//从鼠标到窗口边缘
+
+    xf += win->relative_x;
+    yf += win->relative_y;//旧的坐标鼠标到窗口边缘
+
     xend = (x+w+4<640-1)?x+w:640-4-1;
     yend = (y+h+4<480-1)?y+h:480-4-1;//超过这个范围好像会溢出？
 
     if (x<4) x = 4;
     if (y<4) y = 4;
 
-    if (!*flag) 
+    if (!win->is_drag) 
     {
         free(winbuffer);
         //clrmous(MouseX, MouseY);
         save_bk_win(win,x,y);
-        *flag = 1;//第一次先储存
+        win->is_drag = 1;//第一次先储存
         putimage(xf-4, yf-4, winbuffer, COPY_PUT);
         line(640,0,640,480);
     }
-
 
     if (!(y == yf && x == xf))//出现移动
     {
@@ -520,12 +576,12 @@ DRAGPOS draw_win_frame(WINDOW *win,DRAGPOS *pos,int x,int y,int xf,int yf,int *f
         //在绘制边框前先储存会被边框遮住的照片
         save_bk_win(win,x,y);
         
-
+        //绘制矩形
         rectangle(x-4,y-4,xend+4,yend+4);
         rectangle(x-3,y-3,xend+3,yend+3);
     }
-    result.target_x = x -pos->relative_x;
-    result.target_y = y -pos->relative_y;
+    result.target_x = x -win->relative_x;
+    result.target_y = y -win->relative_y;
     return result;
 }
 

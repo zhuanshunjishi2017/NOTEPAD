@@ -68,10 +68,10 @@
 
 void update_frame(void);
 
-void update_menu(MENU*,MENU (*)[SUBMENU_LEN],int*,int*,int*);
+void update_menu(MENU*,MENU (*)[SUBMENU_LEN],int*);
 
-int update_exit_dialog(WINDOW *,BUTTON *,int *,int *,int *);
-int update_open_dialog(WINDOW *,BUTTON *,ENTRY *,int *,int *,char (*)[32]);
-void tackle_drag_window(WINDOW *win,DRAGPOS *pos,int *flag);
+int update_exit_dialog(WINDOW *,BUTTON *,int *);
+int update_open_dialog(WINDOW *,BUTTON *,ENTRY *,int *,char (*)[32]);
+
 
 #endif
