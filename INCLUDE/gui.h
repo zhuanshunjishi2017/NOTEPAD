@@ -17,6 +17,11 @@
 #define BUTTON_W 64
 #define BUTTON_H 32
 
+#define SMALL_BU_SIZE 28
+
+#define SCROLL_W 18
+#define SCROLL_H 30
+
 
 typedef struct 
 {
@@ -26,25 +31,9 @@ typedef struct
     void (*func)();
 
     int is_highlight;
+    int is_press;
 
 } BUTTON;
-
-typedef struct
-{
-    char title[32];
-    int width;
-    int height;
-    int x;
-    int y;
-
-    int relative_x;
-    int relative_y;
-
-    int is_open;
-    int is_title_click;
-    int is_drag;
-
-} WINDOW;
 
 typedef struct
 {
@@ -59,6 +48,32 @@ typedef struct
 
 } ENTRY;
 
+typedef struct window
+{
+    char title[32];
+    int width;
+    int height;
+    int x;
+    int y;
+
+    int (*update)(struct window *,int);
+
+    BUTTON *button;
+    ENTRY *entry;
+
+    int is_fullscreen;
+
+    int relative_x;
+    int relative_y;
+
+    int is_open;
+    int is_title_click;
+    int is_drag;
+
+} WINDOW;
+
+
+
 typedef struct 
 {
     int target_x;
@@ -66,14 +81,18 @@ typedef struct
 } POSITION;
 
 extern BUTTON confirm[2];
-extern WINDOW exit_dialog;
-extern WINDOW open_dialog;
 
 extern ENTRY entries[2];
+
+extern BUTTON inputs[3];
+
+extern BUTTON scrolls[3];
 
 extern POSITION dialog_pos;
 
 extern int dialog_state;
+
+extern int is_edit_open;
 
 
 void draw_button(BUTTON *bu,int x,int y,int state);
@@ -85,8 +104,7 @@ int show_button(BUTTON *button,int x,int y);
 
 void init_entry(ENTRY *en);
 
-int show_open_dialog(WINDOW *win,ENTRY *entry,BUTTON *button);
-int show_exit_dialog(WINDOW *dialog,BUTTON *button);
+int show_dialog(WINDOW *dialog);
 
 void tackle_drag_window(WINDOW *win,POSITION *pos);
 
@@ -94,6 +112,9 @@ POSITION draw_win_frame(WINDOW *,POSITION *);
 
 void save_bk_win(WINDOW *win,int x, int y);
 
-void getdir(char *);
+void show_bottom_bar(BUTTON *,int);
+void create_bar(int x,int y,int xend,int yend);
+void create_scroll(BUTTON *bu,int x,int y,int state);
+
 
 #endif

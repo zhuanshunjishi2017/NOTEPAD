@@ -18,6 +18,7 @@
 #include"mouse.h"
 #include "menu.h"
 #include "gui.h"
+#include "dialog.h"
 
 
 #define NUM0 0x5230
@@ -30,6 +31,7 @@
 #define NUM7 0x4737
 #define NUM8 0x4838
 #define NUM9 0x4939
+
 #define F2 0x3c00
 #define F3 0x3d00
 #define F4 0x3e00
@@ -40,6 +42,7 @@
 #define F9 0x4300
 #define F10 0x4400
 #define F1 0x3b00
+
 #define ENTER 0x1c0d
 #define BACK 0x0e08
 #define ESC 0x011b
@@ -66,12 +69,14 @@
 #define DIALOG_HELP 5
 #define DIALOG_ABOUT 6
 
+#define INIT 0
+#define UPDATE 1
+
+#define SCREEN_W 639
+#define SCREEN_H 479
+
 void update_frame(void);
 
 void update_menu(MENU*,MENU (*)[SUBMENU_LEN],int*);
-
-int update_exit_dialog(WINDOW *,BUTTON *,int *);
-int update_open_dialog(WINDOW *,BUTTON *,ENTRY *,int *,char (*)[32]);
-
 
 #endif
